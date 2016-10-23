@@ -1,8 +1,5 @@
-package code
-package model
+package code.model
 
-
-import code.lib.BootstrapCodeGenerator._
 import code.snippet.DataImport.Argument
 import net.liftweb.common.{Box, Full}
 import net.liftweb.json.DefaultFormats
@@ -10,6 +7,7 @@ import net.liftweb.mapper._
 import net.liftweb.util.FieldError
 
 import scala.xml.Text
+import code.lib.BootstrapCodeGenerator._
 /**
  * The singleton that has methods for accessing the database
  */
@@ -21,6 +19,7 @@ object Job extends Job with LongKeyedMetaMapper[Job] {
 
 
 }
+
 /**
  * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
  */

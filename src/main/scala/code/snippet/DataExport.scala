@@ -3,6 +3,7 @@ package code.snippet
 import com.recipegrace.bigbricks.data.BigBricksExport
 import net.liftweb.http._
 import net.liftweb.util.Helpers._
+
 /**
  * Created by fjacob on 8/16/15.
  */
@@ -23,7 +24,7 @@ object DataExport {
 
 
   def poemTextFile : LiftResponse = {
-    val name:String = s"bigbricks${System.currentTimeMillis().toString}.xml"
+    val name:String = s"com.recipegrace.bigbricks${System.currentTimeMillis().toString}.xml"
 
     InMemoryResponse(
       content.getBytes("UTF-8"),

@@ -1,8 +1,7 @@
 package code.model
 
-import code.lib.BootstrapCodeGenerator._
 import net.liftweb.mapper._
-
+import code.lib.BootstrapCodeGenerator._
 /**
  * The singleton that has methods for accessing the database
  */
@@ -20,6 +19,7 @@ object Cluster extends Cluster with LongKeyedMetaMapper[Cluster] {
 
 
 }
+
 class Cluster extends LongKeyedMapper[Cluster]  with IdPK {
   def getSingleton = Cluster // what's the "meta" server
   object clusterName extends MappedString(this, 100) {

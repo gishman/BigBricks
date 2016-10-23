@@ -22,7 +22,7 @@ class ProjectRender extends PaginatorSnippet[Project] {
 
   override def page: Seq[Project] =  Project.findAll(StartAt(curPage*itemsPerPage), MaxRows(itemsPerPage))
 
-  def projects: NodeSeq = {
+  def projects( in:NodeSeq): NodeSeq = {
 
 
 

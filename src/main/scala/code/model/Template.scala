@@ -1,8 +1,7 @@
-package code
-package model
+package code.model
 
-import code.lib.BootstrapCodeGenerator._
 import net.liftweb.mapper._
+import code.lib.BootstrapCodeGenerator._
 
 /**
  * The singleton that has methods for accessing the database

@@ -1,11 +1,10 @@
 package code
 package model
 
-import net.liftmodules.FoBoBs.mapper._
-import net.liftweb.common._
 import net.liftweb.mapper._
+import net.liftweb.common._
 import net.liftweb.sitemap.Loc._
-
+import net.liftmodules.FoBoBs.mapper._
 /**
  * The singleton that has methods for accessing the database
  */
@@ -15,17 +14,17 @@ object User extends User with MetaMegaProtoUser[User] with BootstrapMegaMetaProt
 			       <lift:bind /></lift:surround>)
   // define the order fields will appear in forms and output
   override def fieldOrder = List(id, firstName, lastName, email,
-  locale, timezone, password, textArea)
-
+  locale, timezone, password, textArea) 
+  
   //If you set this to false then comment out the validateUserMenuLoc override bellow
   override def skipEmailValidation = true
 
   //add a loc group to the user menu
   override def globalUserLocParams: List[LocParam[Unit]] = List(LocGroup("user"))
-
-  override def resetPasswordMenuLoc: Box[net.liftweb.sitemap.Menu] = Box(Empty)
-  override def validateUserMenuLoc: Box[net.liftweb.sitemap.Menu] = Box(Empty)
-
+  
+  override def resetPasswordMenuLoc: Box[net.liftweb.sitemap.Menu] = Box(Empty) 
+  override def validateUserMenuLoc: Box[net.liftweb.sitemap.Menu] = Box(Empty) 
+ 
 }
 
 /**

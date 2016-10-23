@@ -1,23 +1,19 @@
 package com.recipegrace.bigbricks.db
 
-import com.recipegrace.bigbricks.data.BigBricksExport._
-import com.recipegrace.bigbricks.data.BigBricksImport._
+import com.recipegrace.biglibrary.core.BaseTest
 import net.liftweb.db.StandardDBVendor
 import net.liftweb.mapper.DB
 import net.liftweb.util
 import net.liftweb.util.Props
-import org.specs2.mutable.Specification
-
+import com.recipegrace.bigbricks.data.BigBricksExport._
+import com.recipegrace.bigbricks.data.BigBricksImport._
 /**
  * Created by fjacob on 8/21/15.
  */
-class DBExportTest extends Specification {
+class DBExportTest extends BaseTest {
 
 
-
-  "Parser test" should {
-    "jobs" in {
-
+   test("db test"){
 
       val vendor =
         new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
@@ -32,7 +28,7 @@ class DBExportTest extends Specification {
       content.startsWith("{\"clusters\":[],") shouldEqual true
 
     }
-  }
+
 
 
     }

@@ -1,8 +1,7 @@
 package code.model
 
-import code.lib.BootstrapCodeGenerator._
 import net.liftweb.mapper._
-
+import code.lib.BootstrapCodeGenerator._
 /**
  * The singleton that has methods for accessing the database
  */
@@ -13,6 +12,7 @@ object Project extends Project with LongKeyedMetaMapper[Project] {
   override def dbTableName = "projects"
   formatFormElement = bsformFormElement
 }
+
 /**
  * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
  */

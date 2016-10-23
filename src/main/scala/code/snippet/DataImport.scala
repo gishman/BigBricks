@@ -1,15 +1,15 @@
-package code
-package snippet
+package code.snippet
 
 import code.model.{Job, Project, Template}
-import com.recipegrace.bigbricks.data.ScriptDBImport._
 import com.recipegrace.bigbricks.data.{BigBricksImport, ScriptDBImport}
+import com.recipegrace.bigbricks.data.ScriptDBImport.ScriptDBJob
 import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http._
 import net.liftweb.json.Serialization._
 import net.liftweb.json._
 import net.liftweb.mapper.By
 import net.liftweb.util.Helpers._
+
 /**
  * A snippet that binds behavior, functions,
  * to HTML elements
@@ -103,7 +103,7 @@ val message=
          case "bigbricks" => {
 
            BigBricksImport.importBigBricks(content)
-           s"uploaded bigbricks data"
+           s"uploaded com.recipegrace.bigbricks data"
          }
 
 

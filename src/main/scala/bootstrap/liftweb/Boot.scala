@@ -152,7 +152,7 @@ class Boot extends Logger {
    val activeProcessMenu =  (Menu.i("Active processes") / "workflow"/"activeprocess")
    //.rule(loggedIn)
 
-   val deployProcessMenu = Menu.i("Deploy process") / "workflow"/"deployprocess"
+   val deployProcessMenu = Menu.i("Deploy process") / "workflow"/"dynamic"
 
 
    def sitemap = SiteMap(

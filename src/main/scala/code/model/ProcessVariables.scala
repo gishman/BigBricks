@@ -35,7 +35,7 @@ class ProcessVariables extends LongKeyedMapper[ProcessVariables]  with IdPK {
     override def toForm = addClassAttribute(super.toForm)
     override def displayName = "process name"
   }
-  object version extends MappedInt(this) {
+  object version extends MappedString(this,25) {
     override def toForm = addClassAttribute(super.toForm)
 
   }

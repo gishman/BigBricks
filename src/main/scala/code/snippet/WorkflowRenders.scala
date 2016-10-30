@@ -2,6 +2,7 @@ package code.snippet
 
 
 import code.lib.BigBricksLogging
+import com.recipegrace.bigbricks.validation.ProcessVariableValidation
 import com.recipegrace.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Empty, Box, Loggable, Full}
 import net.liftweb.http.SHtml._
@@ -20,7 +21,7 @@ import scala.xml.NodeSeq
   * Created by Ferosh Jacob on 10/21/16.
   */
 
-object DeployProcess extends BigBricksLogging {
+object DeployProcess extends BigBricksLogging with ProcessVariableValidation {
 
 
   def importContent(fileName:String,content: String, processVariables:String) = {
@@ -28,22 +29,25 @@ object DeployProcess extends BigBricksLogging {
 
   }
 
+
   def render = {
+
+
     var processVariables:Box[String]=Empty
     var upload: Box[FileParamHolder] = Empty
 
     def process() : JsCmd = {
       (upload,processVariables) match {
-        case (Full(FileParamHolder(_, mimeType, fileName, file, )), Full(ps)) => {
+        case (Full(FileParamHolder(_, mimeType, fileName, file)), Full(ps)) => {
 
           val definitionContent= new String(file, "iso-8859-1")
-          if(goodPS) {
+          val processVariablesMessage = goodPS(processVariables)
+          if(processVariablesMessage=="") {
             importContent(fileName, definitionContent, ps)
             val message = s"${fileName} deployed"
             logAndDisplayMessage(LoggingInfo, message)
           }else {
-            val message = s" invalid process variables: $ps"
-            logAndDisplayMessage(LoggingWarn,message)
+            logAndDisplayMessage(LoggingWarn,processVariablesMessage)
           }
 
         }
@@ -55,7 +59,7 @@ object DeployProcess extends BigBricksLogging {
     }
 
 
-    "#processvariables" #> text("",processVariables[_] ) &
+    "#processvariables" #> text("",f=> processVariables=Full(f) ) &
     "#file" #> fileUpload(f => upload = Full(f)) &
       "type=submit" #> onSubmitUnit(process)
 

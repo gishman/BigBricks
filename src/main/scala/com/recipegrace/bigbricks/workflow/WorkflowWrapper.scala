@@ -48,7 +48,7 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
 
   def deployProcess(fileName:String, content:String)= {
     val deployment =repositoryService.createDeployment().addString(fileName,content).deploy()
-    repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId).latestVersion().singleResult().getVersion
+     deployment.getId
   }
   def countActiveProcessDefintions()= {
     repositoryService.createProcessDefinitionQuery().active().count()

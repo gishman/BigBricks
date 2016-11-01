@@ -9,32 +9,25 @@ trait ProcessVariableValidation {
 
   val regex = "^[a-zA-Z_$][a-zA-Z_$0-9]*$"
 
-  def goodPS(processVariables:Box[String]): String = {
-    processVariables match {
-      case Full(x)  => {
-        x match {
-          case "" =>""
-          case _ => {
-            val parts =  x.split(",",-1).map(f=> f.trim)
-            val inValidVariables =parts
-              .filterNot(f=> {
-                f.matches(regex)
-              })
-            if(inValidVariables.isEmpty){
+  def goodPS(x:String):String= x match {
+    case "" =>""
+    case _ => {
+      val parts =  x.split(",",-1).map(f=> f.trim)
+      val inValidVariables =parts
+        .filterNot(f=> {
+          f.matches(regex)
+        })
+      if(inValidVariables.isEmpty){
 
-              val distinct = parts.groupBy(f=>f).filter(f=> f._2.length >1)
-              distinct.isEmpty match {
-                case true => ""
-                case _ => s"process variables repeated:'${distinct.keys.mkString(",")}'"
-              }
-
-            }else s"invalid process variables:'${inValidVariables.mkString(",")}'"
-
-          }
+        val distinct = parts.groupBy(f=>f).filter(f=> f._2.length >1)
+        distinct.isEmpty match {
+          case true => ""
+          case _ => s"process variables repeated:'${distinct.keys.mkString(",")}'"
         }
 
-      }
-      case _ => "Error is accessing processvariables"
+      }else s"invalid process variables:'${inValidVariables.mkString(",")}'"
+
     }
   }
+
 }

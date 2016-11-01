@@ -1,7 +1,7 @@
 package code.model
 
+import com.recipegrace.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.mapper._
-import code.lib.BootstrapCodeGenerator._
 
 /**
  * The singleton that has methods for accessing the database
@@ -9,11 +9,10 @@ import code.lib.BootstrapCodeGenerator._
 object Template extends Template with LongKeyedMetaMapper[Template] {
 
   override def fieldOrder = List(templateName,template)
-  override def dbTableName = "templates"
   formatFormElement = bsformFormElement
 }
 
-class Template extends LongKeyedMapper[Template]  with IdPK {
+class Template extends LongKeyedMapper[Template]  with IdPK  with HTMLCodeGenerator{
   def getSingleton = Template // what's the "meta" server
   object templateName extends MappedString(this, 50){
 

@@ -1,4 +1,4 @@
-package code.lib
+package com.recipegrace.bigbricks.ui
 
 import net.liftweb.common.Loggable
 import net.liftweb.http.S

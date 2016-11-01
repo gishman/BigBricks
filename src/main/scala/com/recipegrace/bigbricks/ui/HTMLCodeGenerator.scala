@@ -1,4 +1,4 @@
-package code.lib
+package com.recipegrace.bigbricks.ui
 
 import net.liftweb.common.{Box, Empty, Full}
 
@@ -8,7 +8,33 @@ import scala.xml.{Attribute, Elem, NodeSeq, Null, Text}
 /**
  * Created by fjacob on 8/9/15.
  */
-object BootstrapCodeGenerator {
+trait HTMLCodeGenerator {
+
+
+  implicit  def toTD(text:String):Elem = {
+
+    <td>{text}</td>
+  }
+
+  def createTable[T](t:List[T],   transformations:(String,(T)=>Elem)*) = {
+    val content = t.flatMap(f=> {
+      transformations.map(g=> {g._2(f)})
+    })
+    createTableTemplateWithColumns(content, transformations.map(f=> f._1):_*)
+  }
+  def createTableTemplateWithColumns(content:NodeSeq, columns:String*) = {
+    <table class="table table-condensed">
+      <thread>
+        <tr>
+       { columns.map(f=> <td> {f} </td>)}
+
+        </tr>
+      </thread>
+      <tbody>
+        {content}
+      </tbody>
+    </table>
+  }
   val  bsformFormElement:(NodeSeq, NodeSeq) => NodeSeq =
     (name, form) =>
       <div class="form-group">

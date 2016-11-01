@@ -22,6 +22,8 @@ import scala.language.postfixOps
  * to modify lift's environment
  */
 class Boot extends Logger {
+
+
   def boot {
 
     if (!DB.jndiJdbcConnAvailable_?) {
@@ -39,9 +41,10 @@ class Boot extends Logger {
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Project)
-    Schemifier.schemify(true, Schemifier.infoF _, code.model.Template)
+    Schemifier.schemify(true, Schemifier.infoF _,code.model.Template)
     Schemifier.schemify(true, Schemifier.infoF _, Job)
     Schemifier.schemify(true, Schemifier.infoF _, Cluster)
+    Schemifier.schemify(true, Schemifier.infoF _, Process)
 
     // where to search snippet
     LiftRules.addToPackages("code")
@@ -146,13 +149,15 @@ class Boot extends Logger {
 
 
 
-   val processDefnMenu    = Menu.i("Process defintion") / "workflow"/ "processdefinition"
+   val processDefnMenu    = Menu.i("Process defintion") / "workflow"/  "process" /"list"
    val taskListMenu    = Menu.i("List tasks") / "workflow"/ "listtasks"
 
-   val activeProcessMenu =  (Menu.i("Active processes") / "workflow"/"activeprocess")
-   //.rule(loggedIn)
+   val activeProcessMenu =  Menu.i("Processes") / "workflow"/"processinstances"
+   val processDetailsMenu = Menu.i("Process details") / "workflow" / "processdetails" >> Hidden
 
-   val deployProcessMenu = Menu.i("Deploy process") / "workflow"/"deployprocess"
+   val deployProcessMenu = Menu.i("Deploy process") / "workflow"/ "process" /"deploy"
+   val startProcessMenu = Menu.i("Edit process") / "workflow"/ "process" /"start" >> Hidden
+   val deleteProcessMenu = Menu.i("Delete process") / "workflow"/ "process" /"delete" >> Hidden
 
 
    def sitemap = SiteMap(
@@ -164,7 +169,8 @@ class Boot extends Logger {
      ,editTemplateMenu,addTemplateMenu,deleteTemplateMenu
      ,editClusterMenu,addClusterMenu,deleteClusterMenu,
 
-     processLabel >> LocGroup("topRight") >> PlaceHolder submenus (activeProcessMenu, processDefnMenu,deployProcessMenu),
+     processLabel >> LocGroup("topRight") >> PlaceHolder submenus (
+       activeProcessMenu, processDefnMenu,deployProcessMenu,startProcessMenu,deleteProcessMenu,processDetailsMenu),
      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus (taskListMenu),
 
 

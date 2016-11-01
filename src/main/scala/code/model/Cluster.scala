@@ -1,7 +1,7 @@
 package code.model
 
+import com.recipegrace.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.mapper._
-import code.lib.BootstrapCodeGenerator._
 /**
  * The singleton that has methods for accessing the database
  */
@@ -9,7 +9,6 @@ object Cluster extends Cluster with LongKeyedMetaMapper[Cluster] {
 
 
   override def fieldOrder = List(clusterName,userName,password)
-  override def dbTableName = "clusters"
 
   formatFormElement = bsformFormElement
 
@@ -20,7 +19,7 @@ object Cluster extends Cluster with LongKeyedMetaMapper[Cluster] {
 
 }
 
-class Cluster extends LongKeyedMapper[Cluster]  with IdPK {
+class Cluster extends LongKeyedMapper[Cluster]  with IdPK with HTMLCodeGenerator{
   def getSingleton = Cluster // what's the "meta" server
   object clusterName extends MappedString(this, 100) {
 

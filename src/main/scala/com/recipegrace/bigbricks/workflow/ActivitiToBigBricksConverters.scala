@@ -1,6 +1,7 @@
 package com.recipegrace.bigbricks.workflow
 
 
+import org.activiti.engine.history.HistoricProcessInstance
 import org.activiti.engine.task.Task
 import org.activiti.engine.repository.ProcessDefinition
 import org.activiti.engine.runtime.ProcessInstance
@@ -15,5 +16,8 @@ trait ActivitiToBigBricksConverters  extends  BigBricksWorkflowComponents{
   }
   def taskToBBTask(f:Task):BBTask = {
     BBTask(f.getId, f.getName)
+  }
+  def processToBBProcess(f:HistoricProcessInstance) = {
+    BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","")
   }
 }

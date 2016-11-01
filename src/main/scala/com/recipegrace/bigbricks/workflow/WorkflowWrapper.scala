@@ -1,7 +1,6 @@
 package com.recipegrace.bigbricks.workflow
 
 import org.activiti.engine.ProcessEngineConfiguration
-import org.activiti.engine.repository.ProcessDefinition
 import org.activiti.engine.runtime.ProcessInstance
 import scala.collection.JavaConversions._
 /**
@@ -17,6 +16,7 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
     .createProcessEngineConfigurationFromResource("/activiti.cfg.xml")
     .buildProcessEngine()
   val runtimeService = processEngine.getRuntimeService()
+  val historyService = processEngine.getHistoryService
   val repositoryService = processEngine.getRepositoryService()
   val taskService = processEngine.getTaskService
 
@@ -28,6 +28,10 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
   def countActiveProcesses()= {
     runtimeService.createProcessInstanceQuery().active().count()
   }
+
+  def listFinishedProcesses() = {
+    historyService.createHistoricProcessInstanceQuery().list().map(processToBBProcess).toList
+  }
   def listActiveProcesses(first:Int, max:Int)= {
 
 
@@ -36,7 +40,7 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
   def listActiveProcesses()= {
 
 
-    runtimeService.createProcessInstanceQuery().active().list().map(f=> InstanceToBBProcess(f))
+    runtimeService.createProcessInstanceQuery().active().list().map(f=> InstanceToBBProcess(f)).toList
   }
 
   def InstanceToBBProcess(f: ProcessInstance): BBProcess = {
@@ -46,9 +50,16 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
 
   }
 
+  def startProcess(deploymentId:String, variables:Map[String,String] ) = {
+   val definition= repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult()
+    runtimeService.startProcessInstanceById(definition.getId,variables)
+  }
   def deployProcess(fileName:String, content:String)= {
     val deployment =repositoryService.createDeployment().addString(fileName,content).deploy()
      deployment.getId
+  }
+  def deleteDeployment(deploymentId:String) ={
+    repositoryService.deleteDeployment(deploymentId)
   }
   def countActiveProcessDefintions()= {
     repositoryService.createProcessDefinitionQuery().active().count()
@@ -60,6 +71,12 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
     repositoryService.createProcessDefinitionQuery().active().list().map(f=> definitionToBBProcessDefinition(f))
   }
 
+  def listProcesses(status:String):List[BBProcess] = {
+    status match {
+      case "Finished" =>  listFinishedProcesses()
+      case  _ => listActiveProcesses()
+    }
+  }
   def listTasks() = {
     taskService.createTaskQuery().active().list().map(f=>taskToBBTask(f))
   }

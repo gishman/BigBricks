@@ -1,22 +1,21 @@
 package code.model
 
+import com.recipegrace.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.mapper._
-import code.lib.BootstrapCodeGenerator._
 /**
  * The singleton that has methods for accessing the database
  */
-object Project extends Project with LongKeyedMetaMapper[Project] {
+object Project extends Project with LongKeyedMetaMapper[Project]{
 
 
   override def fieldOrder = List(projectName, projectLocation,jarName,gitBranch)
-  override def dbTableName = "projects"
   formatFormElement = bsformFormElement
 }
 
 /**
  * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
  */
-class Project extends LongKeyedMapper[Project]  with IdPK {
+class Project extends LongKeyedMapper[Project]  with IdPK  with HTMLCodeGenerator{
   def getSingleton = Project // what's the "meta" server
   object projectName extends MappedString(this, 50){
 

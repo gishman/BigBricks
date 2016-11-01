@@ -6,11 +6,14 @@ import com.recipegrace.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
 import com.recipegrace.bigbricks.workflow.{WorkflowWrapper}
 import com.recipegrace.bigbricks.workflow.WorkflowWrapper.BBProcess
 import net.liftweb.common.{Box, Empty, Full}
+import net.liftweb.http.S._
 import net.liftweb.http.js.JsCmds.RedirectTo
 import net.liftweb.http.{SHtml, SessionVar, RequestVar, S}
 import net.liftweb.http.js.{JsCmds, JsCmd}
 import net.liftweb.util.Helpers._
 import net.liftweb.http.SHtml._
+
+import scala.xml.NodeSeq
 
 
 /**
@@ -21,11 +24,12 @@ object currentProcessesType extends SessionVar[Box[String]](Empty)
 class ProcessInstanceRender extends HTMLCodeGenerator with  BigBricksLogging   {
   val statuses = Seq("Current", "Finished").map(f=> (f,f))
   val currentStatus =  currentProcessesType.get
+  val homepage ="processinstances"
 
   private def replace(status: String): JsCmd = {
     currentProcessesType.set(Full(status))
     logAndDisplayMessage(LoggingInfo, "Selected status to" + status)
-    RedirectTo("processinstances", () => {
+    RedirectTo(homepage, () => {
       S.notice(" Project changed to: " + status)
     })
 
@@ -56,4 +60,18 @@ class ProcessInstanceRender extends HTMLCodeGenerator with  BigBricksLogging   {
         "Actions" -> createOperations _
       )
     }
+
+    def details :NodeSeq =
+      selectedProcessId.get match {
+        case Full(id) => {
+          val variables = WorkflowWrapper.listProcessVariables(id)
+          createTable[(String, AnyRef)](variables,
+            "Name" -> ((x: (String, AnyRef)) => x._1),
+            "Value" -> ((x: (String, AnyRef)) => x._2.toString)
+          )
+        }
+        case _ => <b>"Ooops no process found"</b>
+      }
+
+
 }

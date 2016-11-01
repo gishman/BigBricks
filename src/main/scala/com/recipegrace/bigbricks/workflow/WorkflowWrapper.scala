@@ -80,5 +80,8 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
   def listTasks() = {
     taskService.createTaskQuery().active().list().map(f=>taskToBBTask(f))
   }
+  def listProcessVariables(processInstanceId:String) = {
+    runtimeService.getVariables(processInstanceId).toList
+  }
 
 }

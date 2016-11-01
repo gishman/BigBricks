@@ -134,7 +134,6 @@ class StartProcess extends LiftScreen  with BigBricksLogging{
     val variables =fields.map(f=> f.displayName -> f.get).toMap
      Schedule(() => {
       WorkflowWrapper.startProcess(process.deployementId.get, variables)
-       println("Hello THIS IS FINISHED!!!")
        logAndDisplayMessage(LoggingInfo,  s"${process.processName.get} finished! ")
     })
     logAndDisplayMessage(LoggingInfo,  s"${process.processName.get} started! ")

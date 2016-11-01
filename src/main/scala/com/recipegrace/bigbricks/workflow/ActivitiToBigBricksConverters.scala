@@ -4,7 +4,6 @@ package com.recipegrace.bigbricks.workflow
 import org.activiti.engine.history.HistoricProcessInstance
 import org.activiti.engine.task.Task
 import org.activiti.engine.repository.ProcessDefinition
-import org.activiti.engine.runtime.ProcessInstance
 
 /**
   * Created by Ferosh Jacob on 10/22/16.

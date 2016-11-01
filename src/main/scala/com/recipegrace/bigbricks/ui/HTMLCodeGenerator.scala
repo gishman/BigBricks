@@ -17,8 +17,8 @@ trait HTMLCodeGenerator {
   }
 
   def createTable[T](t:List[T],   transformations:(String,(T)=>Elem)*) = {
-    val content = t.flatMap(f=> {
-      transformations.map(g=> {g._2(f)})
+    val content = t.map(f=> {
+       <tr> {transformations.map(g=> {g._2(f)})}</tr>
     })
     createTableTemplateWithColumns(content, transformations.map(f=> f._1):_*)
   }

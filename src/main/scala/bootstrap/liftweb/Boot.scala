@@ -152,8 +152,8 @@ class Boot extends Logger {
    val processDefnMenu    = Menu.i("Process defintion") / "workflow"/  "process" /"list"
    val taskListMenu    = Menu.i("List tasks") / "workflow"/ "listtasks"
 
-   val activeProcessMenu =  Menu.i("Processes") / "workflow"/"processinstances"
-   val processDetailsMenu = Menu.i("Process details") / "workflow" / "processdetails" >> Hidden
+   val activeProcessMenu =  Menu.i("Processes") / "workflow"/ "process"/ "processinstances"
+   val processDetailsMenu = Menu.i("Process details") / "workflow" / "process"/ "processdetails" >> Hidden
 
    val deployProcessMenu = Menu.i("Deploy process") / "workflow"/ "process" /"deploy"
    val startProcessMenu = Menu.i("Edit process") / "workflow"/ "process" /"start" >> Hidden

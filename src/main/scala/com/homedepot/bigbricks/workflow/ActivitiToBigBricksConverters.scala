@@ -1,5 +1,4 @@
-package com.recipegrace.bigbricks.workflow
-
+package com.homedepot.bigbricks.workflow
 
 import org.activiti.engine.history.HistoricProcessInstance
 import org.activiti.engine.task.Task

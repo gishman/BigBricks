@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks.validation
+package com.homedepot.bigbricks.validation
 
 import net.liftweb.common.{Full, Box}
 

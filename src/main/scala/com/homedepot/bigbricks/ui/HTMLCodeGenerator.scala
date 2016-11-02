@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks.ui
+package com.homedepot.bigbricks.ui
 
 import net.liftweb.common.{Box, Empty, Full}
 

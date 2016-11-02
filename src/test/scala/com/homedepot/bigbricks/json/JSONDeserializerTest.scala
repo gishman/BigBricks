@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks.json
+package com.homedepot.bigbricks.json
 
 import code.model.Project
 import com.recipegrace.biglibrary.core.BaseTest

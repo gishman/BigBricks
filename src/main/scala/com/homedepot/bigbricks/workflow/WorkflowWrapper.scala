@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks.workflow
+package com.homedepot.bigbricks.workflow
 
 import org.activiti.engine.ProcessEngineConfiguration
 import org.activiti.engine.runtime.ProcessInstance
@@ -30,7 +30,9 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
   }
 
   def listFinishedProcesses() = {
-    historyService.createHistoricProcessInstanceQuery().list().map(processToBBProcess).toList
+    historyService.createHistoricProcessInstanceQuery()
+     .finished()
+      .list().map(processToBBProcess).toList
   }
   def listActiveProcesses(first:Int, max:Int)= {
 

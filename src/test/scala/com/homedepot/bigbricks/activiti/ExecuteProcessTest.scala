@@ -1,8 +1,8 @@
-package com.recipegrace.bigbricks.activiti
+package com.homedepot.bigbricks.activiti
 
 import java.util
 
-import com.recipegrace.bigbricks.workflow.WorkflowWrapper
+import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.db.DB
 import net.liftweb.util.Props
 import org.activiti.engine.ProcessEngineConfiguration

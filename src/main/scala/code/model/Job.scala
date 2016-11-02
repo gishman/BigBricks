@@ -1,7 +1,7 @@
 package code.model
 
 import code.snippet.DataImport.Argument
-import com.recipegrace.bigbricks.ui.HTMLCodeGenerator
+import com.homedepot.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.common.{Box, Full}
 import net.liftweb.json.DefaultFormats
 import net.liftweb.mapper._

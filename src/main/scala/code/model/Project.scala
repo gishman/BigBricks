@@ -1,6 +1,6 @@
 package code.model
 
-import com.recipegrace.bigbricks.ui.HTMLCodeGenerator
+import com.homedepot.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.mapper._
 /**
  * The singleton that has methods for accessing the database

@@ -1,10 +1,9 @@
 package code.snippet
 
 
-import com.recipegrace.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
-
-import com.recipegrace.bigbricks.workflow.{WorkflowWrapper}
-import com.recipegrace.bigbricks.workflow.WorkflowWrapper.BBProcess
+import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bigbricks.workflow.WorkflowWrapper
+import WorkflowWrapper.BBProcess
 import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http.S._
 import net.liftweb.http.js.JsCmds.RedirectTo

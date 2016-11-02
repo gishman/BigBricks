@@ -1,8 +1,8 @@
 package code.snippet
 
 import code.model.{Job, Project, Template}
-import com.recipegrace.bigbricks.data.{BigBricksImport, ScriptDBImport}
-import com.recipegrace.bigbricks.data.ScriptDBImport.ScriptDBJob
+import com.homedepot.bigbricks.data.ScriptDBImport.ScriptDBJob
+import com.homedepot.bigbricks.data.{BigBricksImport, ScriptDBImport}
 import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http._
 import net.liftweb.json.Serialization._

@@ -1,12 +1,11 @@
-package com.recipegrace.bigbricks.db
+package com.homedepot.bigbricks.db
 
+import com.homedepot.bigbricks.data.{BigBricksImport, BigBricksExport}
 import com.recipegrace.biglibrary.core.BaseTest
 import net.liftweb.db.StandardDBVendor
 import net.liftweb.mapper.DB
 import net.liftweb.util
 import net.liftweb.util.Props
-import com.recipegrace.bigbricks.data.BigBricksExport._
-import com.recipegrace.bigbricks.data.BigBricksImport._
 /**
  * Created by fjacob on 8/21/15.
  */
@@ -23,8 +22,8 @@ class DBExportTest extends BaseTest {
       vendor.closeAllConnections_!()
       DB.defineConnectionManager(util.DefaultConnectionIdentifier, vendor)
 
-      val content = exportBigBricks()
-      importBigBricks(content)
+      val content = BigBricksExport. exportBigBricks()
+      BigBricksImport. importBigBricks(content)
       content.startsWith("{\"clusters\":[],") shouldEqual true
 
     }

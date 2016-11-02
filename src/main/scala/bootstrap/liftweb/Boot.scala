@@ -1,6 +1,6 @@
 package bootstrap.liftweb
 
-import com.recipegrace.bigbricks.workflow.WorkflowWrapper
+import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb._
 import net.liftweb.http.js.jquery.JQueryArtifacts
 import util._

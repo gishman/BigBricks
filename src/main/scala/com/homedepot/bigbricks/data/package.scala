@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks
+package com.homedepot.bigbricks
 
 /**
  * Created by fjacob on 8/22/15.

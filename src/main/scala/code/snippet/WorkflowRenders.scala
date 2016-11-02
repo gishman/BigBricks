@@ -1,9 +1,9 @@
 package code.snippet
 
 import code.model.Process
-import com.recipegrace.bigbricks.ui.BigBricksLogging
-import com.recipegrace.bigbricks.validation.ProcessVariableValidation
-import com.recipegrace.bigbricks.workflow.WorkflowWrapper
+import com.homedepot.bigbricks.ui.BigBricksLogging
+import com.homedepot.bigbricks.validation.ProcessVariableValidation
+import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http.SHtml._
 import net.liftweb.http._

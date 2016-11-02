@@ -1,6 +1,7 @@
-package com.recipegrace.bigbricks.json
+package com.homedepot.bigbricks.json
 
-import com.recipegrace.bigbricks.data.ScriptDBImport._
+import com.homedepot.bigbricks.data.ScriptDBImport.ScriptDBJob
+import com.homedepot.bigbricks.data.ScriptDBImport._
 import com.recipegrace.biglibrary.core.BaseTest
 
 /**

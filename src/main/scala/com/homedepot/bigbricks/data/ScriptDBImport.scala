@@ -1,4 +1,4 @@
-package com.recipegrace.bigbricks.data
+package com.homedepot.bigbricks.data
 
 import net.liftweb.json._
 

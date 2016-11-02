@@ -2,9 +2,9 @@ package code.snippet
 
 import code.model.Process
 import code.snippet.Sample._
-import com.recipegrace.bigbricks.ui.{HTMLCodeGenerator, BigBricksLogging}
-import com.recipegrace.bigbricks.validation.ProcessVariableValidation
-import com.recipegrace.bigbricks.workflow.WorkflowWrapper
+import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bigbricks.validation.ProcessVariableValidation
+import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Full, Empty, Box}
 import net.liftweb.http.S._
 import net.liftweb.http.SHtml._

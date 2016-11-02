@@ -20,8 +20,11 @@ env:
   - secure: hAj/ml1DRjLRIHo6KNhJHj/ppHAbzv3c3o/m5s5CWpx+1J7/ZNNYQ68TPVp5u2WPmZMXxrwqdAuLCQbAPnOaRzmoN1quR3iZUGcZryQksqQKkSRkuocgSYcHiWGbxKUnFt4rzAPMKoaFYPuQXUP3hVh74bdtTKi/ghrKT/A8kXSqQVLPK3EehNUHylYENe6swQmHE6RV402Ev6L19yXc6GPY2akG8wo6+Q2fiugFr61U85f/KOwbsxN9ULFAtjqkikbuxBmuzd5qUT7b/4ZUgDS318s9POG6F4AhIVDOVcgF+fxaEIZqYNFzuAFz4QjHTSsjB7axCHL5IgFk+9B6EOe0oxYuEQhohRtRECijRcKdSGlLkCMcRA1keSBE0MPcVhBBvW4WLp87UXfnOh4Q46oZdWvJFK8qQhRYXq67SUqPzBF/EOtQRKD1qF8xwQTAGCMu1jfq8EJysH7mHuX5F3oyq5Y64FRC3Vs4OSv1yX8pghGhcjt/FMnwpZbtBhClHM4ChccRlbp6IBv79nMWttS8QkDqsj+zzbqYPa0CZiD0z+mc9YbucnjOb+oH3XzQbVqvzo2gZLP6vQJXCDZd4vaos5D6y3daubV2fzKjdPhh0zjiHHWreCw40OogA7CTCFiBSqfVX1BWfbIET+z6+Fqunnw84zKYniRP7TE2GYo=
 script:
 - ./sbt ++$TRAVIS_SCALA_VERSION compile
-- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION publish-signed;
-  fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION publish-signed;fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION clean coverage test ;fi
+after_success:
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION coverageReport coveralls;fi
+
 notifications:
   email:
   - on_success: always

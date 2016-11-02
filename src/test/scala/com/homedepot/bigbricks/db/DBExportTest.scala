@@ -12,7 +12,7 @@ import net.liftweb.util.Props
 class DBExportTest extends BaseTest {
 
 
-   test("db test"){
+   ignore("db test"){
 
       val vendor =
         new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",

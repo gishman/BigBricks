@@ -2,6 +2,7 @@ import com.typesafe.sbt.SbtPgp.autoImportImpl._
 import sbt.Keys._
 import sbt._
 import com.earldouglas.xwp.TomcatPlugin
+import org.scoverage.coveralls.Imports.CoverallsKeys._
 object Build extends Build {
 
   val currentScalaVersion = "2.11.6"
@@ -14,6 +15,8 @@ object Build extends Build {
   val username = System.getenv().get("SONATYPE_USERNAME")
 
   val password = System.getenv().get("SONATYPE_PASSWORD")
+  
+  val coverallToken = System.getenv().get("COVERALL_TOKEN")
 
   val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
       case x:String => x
@@ -73,5 +76,6 @@ object Build extends Build {
             <url>http://www.feroshjacob.com</url>
           </developer>
         </developers>),
-resolvers ++= Seq(Resolver.sonatypeRepo("releases"),Resolver.sonatypeRepo("snapshots"))) 
+    coverallsToken := Some("my-token"),
+    resolvers ++= Seq(Resolver.sonatypeRepo("releases"),Resolver.sonatypeRepo("snapshots"))) 
 }

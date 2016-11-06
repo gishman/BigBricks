@@ -3,6 +3,8 @@ package com.homedepot.bigbricks.workflow
 import org.activiti.engine.ProcessEngineConfiguration
 import org.activiti.engine.runtime.ProcessInstance
 import scala.collection.JavaConversions._
+import scala.collection.immutable.HashMap
+
 /**
   * Created by Ferosh Jacob on 10/21/16.
   */
@@ -29,9 +31,8 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
     runtimeService.createProcessInstanceQuery().active().count()
   }
 
-  def listFinishedProcesses() = {
+  def listFinishedProcesses():List[BBProcess] = {
     historyService.createHistoricProcessInstanceQuery()
-     .finished()
       .list().map(processToBBProcess).toList
   }
   def listActiveProcesses(first:Int, max:Int)= {
@@ -47,12 +48,13 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
 
   def InstanceToBBProcess(f: ProcessInstance): BBProcess = {
 
-    val currrentTask = taskService.createTaskQuery().processInstanceId(f.getId).singleResult().getName
-    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, currrentTask)
+    val currrentTask = taskService.createTaskQuery().processInstanceId(f.getId).singleResult()
+    val taskName= if(currrentTask==null) "" else currrentTask .getName
+    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, taskName)
 
   }
 
-  def startProcess(deploymentId:String, variables:Map[String,String] ) = {
+  def startProcess(deploymentId:String, variables:Map[String,String] =new HashMap[String,String]()) = {
    val definition= repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult()
     runtimeService.startProcessInstanceById(definition.getId,variables)
   }
@@ -82,8 +84,20 @@ object WorkflowWrapper  extends ActivitiToBigBricksConverters{
   def listTasks() = {
     taskService.createTaskQuery().active().list().map(f=>taskToBBTask(f))
   }
-  def listProcessVariables(processInstanceId:String) = {
-    runtimeService.getVariables(processInstanceId).toList
+  def listTaskVariables(taskID:String) = {
+    taskService.getVariables(taskID).toList
+  }
+  def completeTask(taskID:String, variables:Map[String,AnyRef]) = {
+    taskService.complete(taskID,variables)
+  }
+
+  def listProcessVariables(processInstanceId:String,status:String):List[(String, AnyRef)] = {
+    status match {
+      case "Finished" =>  historyService.createHistoricProcessInstanceQuery()
+        .includeProcessVariables().processInstanceId(processInstanceId).singleResult().getProcessVariables.toList
+      case  _ => runtimeService.getVariables(processInstanceId).toList.toList
+    }
+
   }
 
 }

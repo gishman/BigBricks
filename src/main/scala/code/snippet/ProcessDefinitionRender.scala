@@ -120,7 +120,6 @@ class StartProcess extends LiftScreen  with BigBricksLogging{
     case Full(s) => s
     case _ => {
       net.liftweb.http.S.redirectTo("list")
-      Process.create
     }
 
   }

@@ -5,7 +5,6 @@ import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import WorkflowWrapper.BBProcess
 import net.liftweb.common.{Box, Empty, Full}
-import net.liftweb.http.S._
 import net.liftweb.http.js.JsCmds.RedirectTo
 import net.liftweb.http.{SHtml, SessionVar, RequestVar, S}
 import net.liftweb.http.js.{JsCmds, JsCmd}
@@ -56,6 +55,8 @@ class ProcessInstanceRender extends HTMLCodeGenerator with  BigBricksLogging   {
       "Process Name" -> ((x:BBProcess)=> x.definitionName),
         "Process ID" -> ((x:BBProcess)=> x.id),
         "State" -> ((x:BBProcess)=> x.state),
+        "Create time" -> ((x:BBProcess)=> x.startTime),
+        "End time" -> ((x:BBProcess)=> x.endTime),
         "Actions" -> createOperations _
       )
     }
@@ -63,11 +64,16 @@ class ProcessInstanceRender extends HTMLCodeGenerator with  BigBricksLogging   {
     def details :NodeSeq =
       selectedProcessId.get match {
         case Full(id) => {
-          val variables = WorkflowWrapper.listProcessVariables(id)
-          createTable[(String, AnyRef)](variables,
-            "Name" -> ((x: (String, AnyRef)) => x._1),
-            "Value" -> ((x: (String, AnyRef)) => x._2.toString)
+          val variables = WorkflowWrapper.listProcessVariables(id,currentStatus.getOrElse(""))
+          variables match {
+
+            case List() => "No variables found!"
+            case list:List[(String,AnyRef)]=>createTable[(String, AnyRef)] (list,
+          "Name" -> ((x: (String, AnyRef) ) => x._1),
+          "Value" -> ((x: (String, AnyRef) ) => x._2.toString)
           )
+
+          }
         }
         case _ => <b>"Ooops no process found"</b>
       }

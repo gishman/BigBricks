@@ -15,8 +15,12 @@ object Process extends Process with LongKeyedMetaMapper[Process] {
 class Process extends LongKeyedMapper[Process]  with IdPK  with HTMLCodeGenerator{
   def getSingleton = Process
 
-  def getProcessVariables = {
-    processVariablesName.get.split(",")
+  def getProcessVariables:Array[String] = {
+
+    processVariablesName.get match {
+      case "" => Array()
+      case x: String => x.split(",", -1)
+    }
   }
   // what's the "meta" server
   object processVariablesName extends MappedString(this, 250) {

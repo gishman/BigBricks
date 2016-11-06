@@ -16,6 +16,11 @@ trait ActivitiToBigBricksConverters  extends  BigBricksWorkflowComponents{
     BBTask(f.getId, f.getName)
   }
   def processToBBProcess(f:HistoricProcessInstance) = {
-    BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","")
+    if(f.getEndTime!=null){
+      BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","",f.getStartTime.toString,f.getEndTime.toString)
+    }
+    else
+
+      BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","")
   }
 }

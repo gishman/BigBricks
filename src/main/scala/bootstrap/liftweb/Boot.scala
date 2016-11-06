@@ -91,7 +91,7 @@ class Boot extends Logger {
     ) 
     
     //Lift CSP settings see http://content-security-policy.com/ and 
-    //Lift API for more information.  
+    //Lift API for more information.
     LiftRules.securityRules = () => {
       SecurityRules(content = Some(ContentSecurityPolicy(           
         scriptSources = List(
@@ -99,7 +99,7 @@ class Boot extends Logger {
         styleSources = List(
             ContentSourceRestriction.Self)
             )))
-    }    
+    }
     // Make a transaction span the whole HTTP request
    info(  s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
     S.addAround(DB.buildLoanWrapper)
@@ -150,7 +150,8 @@ class Boot extends Logger {
 
 
    val processDefnMenu    = Menu.i("Process defintion") / "workflow"/  "process" /"list"
-   val taskListMenu    = Menu.i("List tasks") / "workflow"/ "listtasks"
+   val taskListMenu    = Menu.i("List tasks") / "workflow"/ "task"/"list"
+   val completeTaskMenu    = Menu.i("Complete task") / "workflow"/ "task"/"completetask" >> Hidden
 
    val activeProcessMenu =  Menu.i("Processes") / "workflow"/ "process"/ "processinstances"
    val processDetailsMenu = Menu.i("Process details") / "workflow" / "process"/ "processdetails" >> Hidden
@@ -171,7 +172,7 @@ class Boot extends Logger {
 
      processLabel >> LocGroup("topRight") >> PlaceHolder submenus (
        activeProcessMenu, processDefnMenu,deployProcessMenu,startProcessMenu,deleteProcessMenu,processDetailsMenu),
-     taskLabel >> LocGroup("topRight") >> PlaceHolder submenus (taskListMenu),
+     taskLabel >> LocGroup("topRight") >> PlaceHolder submenus (taskListMenu,completeTaskMenu),
 
 
      ddLabel1      >> LocGroup("topRight") >> PlaceHolder submenus (

@@ -7,20 +7,22 @@ import org.activiti.engine.repository.ProcessDefinition
 /**
   * Created by Ferosh Jacob on 10/22/16.
   */
-trait ActivitiToBigBricksConverters  extends  BigBricksWorkflowComponents{
+trait ActivitiToBigBricksConverters extends BigBricksWorkflowComponents {
 
   def definitionToBBProcessDefinition(f: ProcessDefinition): BBProcessDefintiion = {
     BBProcessDefintiion(f.getId, f.getName, f.getVersion)
   }
-  def taskToBBTask(f:Task):BBTask = {
+
+  def taskToBBTask(f: Task): BBTask = {
     BBTask(f.getId, f.getName)
   }
-  def processToBBProcess(f:HistoricProcessInstance) = {
-    if(f.getEndTime!=null){
-      BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","",f.getStartTime.toString,f.getEndTime.toString)
+
+  def processToBBProcess(f: HistoricProcessInstance) = {
+    if (f.getEndTime != null) {
+      BBProcess(f.getId, f.getName, f.getProcessDefinitionId, "", "", f.getStartTime.toString, f.getEndTime.toString)
     }
     else
 
-      BBProcess(f.getId, f.getName, f.getProcessDefinitionId,"","")
+      BBProcess(f.getId, f.getName, f.getProcessDefinitionId, "", "")
   }
 }

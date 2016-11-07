@@ -1,19 +1,19 @@
-
 <body data-lift-content-id="main">
 <div id="main" data-lift="surround?with=default;at=content">
-        <form data-lift="ProcessDefinitionRender.deployProcess?form=post;multipart=true">
-            <div class="form-group">
-                <label for="file" > Process definition file </label>
-                <input id="file" class="form-control" name="file" placeholder="Enter Local file path here!">
-            </div>
-            <div class="form-group">
-                <label for="processvariables" > Process variables </label>
-                <input id="processvariables" class="form-control" name="processvariables" placeholder="Enter process variables delimited by ,"/>
-            </div>
+    <form data-lift="ProcessDefinitionRender.deployProcess?form=post;multipart=true">
+        <div class="form-group">
+            <label for="file"> Process definition file </label>
+            <input id="file" class="form-control" name="file" placeholder="Enter Local file path here!">
+        </div>
+        <div class="form-group">
+            <label for="processvariables"> Process variables </label>
+            <input id="processvariables" class="form-control" name="processvariables"
+                   placeholder="Enter process variables delimited by ,"/>
+        </div>
 
 
-            <input type="submit"  class="btn btn-default btn-primary" value="Deploy process">
-        </form>
+        <input type="submit" class="btn btn-default btn-primary" value="Deploy process">
+    </form>
 
 </div>
 

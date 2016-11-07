@@ -18,9 +18,9 @@ import net.liftmodules.{JQueryModule, FoBo, FoBoBs}
 import scala.language.postfixOps
 
 /**
- * A class that's instantiated early and run.  It allows the application
- * to modify lift's environment
- */
+  * A class that's instantiated early and run.  It allows the application
+  * to modify lift's environment
+  */
 class Boot extends Logger {
 
 
@@ -29,9 +29,9 @@ class Boot extends Logger {
     if (!DB.jndiJdbcConnAvailable_?) {
       sys.props.put("h2.implicitRelativePath", "true")
       val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-			     Props.get("db.url") openOr 
-			     "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-			     Props.get("db.user"), Props.get("db.password"))
+        Props.get("db.url") openOr
+          "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
+        Props.get("db.user"), Props.get("db.password"))
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
       DB.defineConnectionManager(util.DefaultConnectionIdentifier, vendor)
     }
@@ -41,7 +41,7 @@ class Boot extends Logger {
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Project)
-    Schemifier.schemify(true, Schemifier.infoF _,code.model.Template)
+    Schemifier.schemify(true, Schemifier.infoF _, code.model.Template)
     Schemifier.schemify(true, Schemifier.infoF _, Job)
     Schemifier.schemify(true, Schemifier.infoF _, Cluster)
     Schemifier.schemify(true, Schemifier.infoF _, Process)
@@ -55,14 +55,14 @@ class Boot extends Logger {
 
     //Init the FoBo - Front-End Toolkit module, 
     //see http://liftweb.net/lift_modules for more info
-    FoBo.Toolkit.Init=FoBo.Toolkit.JQuery224
-    FoBo.Toolkit.Init=FoBo.Toolkit.Bootstrap337 
-    FoBo.Toolkit.Init=FoBo.Toolkit.FontAwesome463    
-    
+    FoBo.Toolkit.Init = FoBo.Toolkit.JQuery224
+    FoBo.Toolkit.Init = FoBo.Toolkit.Bootstrap337
+    FoBo.Toolkit.Init = FoBo.Toolkit.FontAwesome463
+
     //Show the spinny image when an Ajax call starts
     LiftRules.ajaxStart =
       Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
-    
+
     // Make the spinny image go away when it ends
     LiftRules.ajaxEnd =
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
@@ -80,114 +80,112 @@ class Boot extends Logger {
 
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
-      new Html5Properties(r.userAgent))    
-      
-    LiftRules.noticesAutoFadeOut.default.set( (notices: NoticeType.Value) => {
-        notices match {
-          case NoticeType.Notice => Full((8 seconds, 4 seconds))
-          case _ => Empty
-        }
-     }
-    ) 
-    
+      new Html5Properties(r.userAgent))
+
+    LiftRules.noticesAutoFadeOut.default.set((notices: NoticeType.Value) => {
+      notices match {
+        case NoticeType.Notice => Full((8 seconds, 4 seconds))
+        case _ => Empty
+      }
+    }
+    )
+
     //Lift CSP settings see http://content-security-policy.com/ and 
     //Lift API for more information.
     LiftRules.securityRules = () => {
-      SecurityRules(content = Some(ContentSecurityPolicy(           
+      SecurityRules(content = Some(ContentSecurityPolicy(
         scriptSources = List(
-            ContentSourceRestriction.Self),   
+          ContentSourceRestriction.Self),
         styleSources = List(
-            ContentSourceRestriction.Self)
-            )))
+          ContentSourceRestriction.Self)
+      )))
     }
     // Make a transaction span the whole HTTP request
-   info(  s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
+    info(s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
     S.addAround(DB.buildLoanWrapper)
   }
 
- object Site {
+  object Site {
 
-   val loggedIn = If(() => User.loggedIn_?,
-     () => RedirectResponse("/user_mgt/login"))
-   val divider1   = Menu("divider1") / "divider1"
-   val ddLabel1   = Menu.i("UserDDLabel") / "ddlabel1"
-   val ddLabel2   = Menu.i("Components") / "ddlabel2"
-   val home       = Menu.i("Home") / "index"
-   val processLabel = Menu.i("Process") / "ddlabel3"
-   val taskLabel = Menu.i("Task") / "ddlabel4"
+    val loggedIn = If(() => User.loggedIn_?,
+      () => RedirectResponse("/user_mgt/login"))
+    val divider1 = Menu("divider1") / "divider1"
+    val ddLabel1 = Menu.i("UserDDLabel") / "ddlabel1"
+    val ddLabel2 = Menu.i("Components") / "ddlabel2"
+    val home = Menu.i("Home") / "index"
+    val processLabel = Menu.i("Process") / "ddlabel3"
+    val taskLabel = Menu.i("Task") / "ddlabel4"
 
-   val userMenu   = User.AddUserMenusHere
+    val userMenu = User.AddUserMenusHere
 
-   val dataMenu    = Menu.i("Data") / "data" / "index"
-
-
-   val jobMenu    = (Menu.i("Jobs") / "components"/"job" / "index")
-     //.rule(loggedIn)
-   val editJobMenu =  Menu.i("Edit Job") / "components"/"job" /"edit" >> Hidden
-   val addJobMenu =  Menu.i("Add Job") / "components"/"job" /"add" >> Hidden
-   val deleteJobMenu =  Menu.i("Delete Job") / "components"/"job" /"delete" >> Hidden
+    val dataMenu = Menu.i("Data") / "data" / "index"
 
 
-   val projectMenu    = (Menu.i("Projects") / "components"/"project" / "index")
-     //.rule(loggedIn)
-   val editProjectMenu =  Menu.i("Edit Project") / "components"/"project" /"edit" >> Hidden
-   val addProjectMenu =  Menu.i("Add Project") / "components"/"project" /"add" >> Hidden
-   val deleteProjectMenu =  Menu.i("Delete Project") / "components"/"project" /"delete" >> Hidden
-
-   val templateMenu    = (Menu.i("Templates") / "components"/"template" / "index")
-     //.rule(loggedIn)
-   val editTemplateMenu =  Menu.i("Edit Template") / "components"/"template" /"edit" >> Hidden
-   val addTemplateMenu =  Menu.i("Add Template") / "components"/"template" /"add" >> Hidden
-   val deleteTemplateMenu =  Menu.i("Delete Template") / "components"/"template" /"delete" >> Hidden
-
-   val clusterMenu    = (Menu.i("Clusters") / "components"/"cluster" / "index")
-     //.rule(loggedIn)
-   val editClusterMenu =  Menu.i("Edit Cluster") / "components"/"cluster" /"edit" >> Hidden
-   val addClusterMenu =  Menu.i("Add Cluster") / "components"/"cluster" /"add" >> Hidden
-   val deleteClusterMenu =  Menu.i("Delete Cluster") / "components"/"cluster" /"delete" >> Hidden
+    val jobMenu = (Menu.i("Jobs") / "components" / "job" / "index")
+    //.rule(loggedIn)
+    val editJobMenu = Menu.i("Edit Job") / "components" / "job" / "edit" >> Hidden
+    val addJobMenu = Menu.i("Add Job") / "components" / "job" / "add" >> Hidden
+    val deleteJobMenu = Menu.i("Delete Job") / "components" / "job" / "delete" >> Hidden
 
 
+    val projectMenu = (Menu.i("Projects") / "components" / "project" / "index")
+    //.rule(loggedIn)
+    val editProjectMenu = Menu.i("Edit Project") / "components" / "project" / "edit" >> Hidden
+    val addProjectMenu = Menu.i("Add Project") / "components" / "project" / "add" >> Hidden
+    val deleteProjectMenu = Menu.i("Delete Project") / "components" / "project" / "delete" >> Hidden
+
+    val templateMenu = (Menu.i("Templates") / "components" / "template" / "index")
+    //.rule(loggedIn)
+    val editTemplateMenu = Menu.i("Edit Template") / "components" / "template" / "edit" >> Hidden
+    val addTemplateMenu = Menu.i("Add Template") / "components" / "template" / "add" >> Hidden
+    val deleteTemplateMenu = Menu.i("Delete Template") / "components" / "template" / "delete" >> Hidden
+
+    val clusterMenu = (Menu.i("Clusters") / "components" / "cluster" / "index")
+    //.rule(loggedIn)
+    val editClusterMenu = Menu.i("Edit Cluster") / "components" / "cluster" / "edit" >> Hidden
+    val addClusterMenu = Menu.i("Add Cluster") / "components" / "cluster" / "add" >> Hidden
+    val deleteClusterMenu = Menu.i("Delete Cluster") / "components" / "cluster" / "delete" >> Hidden
 
 
-   val processDefnMenu    = Menu.i("Process defintion") / "workflow"/  "process" /"list"
-   val taskListMenu    = Menu.i("List tasks") / "workflow"/ "task"/"list"
-   val completeTaskMenu    = Menu.i("Complete task") / "workflow"/ "task"/"completetask" >> Hidden
+    val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"
+    val taskListMenu = Menu.i("List tasks") / "workflow" / "task" / "list"
+    val completeTaskMenu = Menu.i("Complete task") / "workflow" / "task" / "completetask" >> Hidden
 
-   val activeProcessMenu =  Menu.i("Processes") / "workflow"/ "process"/ "processinstances"
-   val processDetailsMenu = Menu.i("Process details") / "workflow" / "process"/ "processdetails" >> Hidden
+    val activeProcessMenu = Menu.i("Processes") / "workflow" / "process" / "processinstances"
+    val processDetailsMenu = Menu.i("Process details") / "workflow" / "process" / "processdetails" >> Hidden
 
-   val deployProcessMenu = Menu.i("Deploy process") / "workflow"/ "process" /"deploy"
-   val startProcessMenu = Menu.i("Edit process") / "workflow"/ "process" /"start" >> Hidden
-   val deleteProcessMenu = Menu.i("Delete process") / "workflow"/ "process" /"delete" >> Hidden
-
-
-   def sitemap = SiteMap(
+    val deployProcessMenu = Menu.i("Deploy process") / "workflow" / "process" / "deploy"
+    val startProcessMenu = Menu.i("Edit process") / "workflow" / "process" / "start" >> Hidden
+    val deleteProcessMenu = Menu.i("Delete process") / "workflow" / "process" / "delete" >> Hidden
 
 
-     home          >> LocGroup("lg1")
-     ,editJobMenu,addJobMenu,deleteJobMenu
-     ,editProjectMenu,addProjectMenu,deleteProjectMenu
-     ,editTemplateMenu,addTemplateMenu,deleteTemplateMenu
-     ,editClusterMenu,addClusterMenu,deleteClusterMenu,
-
-     processLabel >> LocGroup("topRight") >> PlaceHolder submenus (
-       activeProcessMenu, processDefnMenu,deployProcessMenu,startProcessMenu,deleteProcessMenu,processDetailsMenu),
-     taskLabel >> LocGroup("topRight") >> PlaceHolder submenus (taskListMenu,completeTaskMenu),
+    def sitemap = SiteMap(
 
 
-     ddLabel1      >> LocGroup("topRight") >> PlaceHolder submenus (
+      home >> LocGroup("lg1")
+      , editJobMenu, addJobMenu, deleteJobMenu
+      , editProjectMenu, addProjectMenu, deleteProjectMenu
+      , editTemplateMenu, addTemplateMenu, deleteTemplateMenu
+      , editClusterMenu, addClusterMenu, deleteClusterMenu,
 
-       divider1  >> FoBoBs.BSLocInfo.Divider >> userMenu
-       ),
-     ddLabel2      >> LocGroup("topRight") >> PlaceHolder submenus (
-       projectMenu,
-       templateMenu,
-       clusterMenu,
-       jobMenu,
-       dataMenu
-       )
-   )
- }
+      processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
+        activeProcessMenu, processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu),
+      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu),
+
+
+      ddLabel1 >> LocGroup("topRight") >> PlaceHolder submenus (
+
+        divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
+        ),
+      ddLabel2 >> LocGroup("topRight") >> PlaceHolder submenus(
+        projectMenu,
+        templateMenu,
+        clusterMenu,
+        jobMenu,
+        dataMenu
+        )
+    )
+  }
 
 
 }

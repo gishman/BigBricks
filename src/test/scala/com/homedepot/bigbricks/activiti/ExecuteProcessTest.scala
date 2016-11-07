@@ -12,13 +12,10 @@ import scala.io.Source
 /**
   * Created by Ferosh Jacob on 10/16/16.
   */
-object ExecuteProcessTest extends App{
+object ExecuteProcessTest extends App {
 
 
-
-
-
-   val processEngine = ProcessEngineConfiguration
+  val processEngine = ProcessEngineConfiguration
     .createProcessEngineConfigurationFromResource("/activiti.cfg.xml")
     .buildProcessEngine()
   val runtimeService = processEngine.getRuntimeService()
@@ -26,14 +23,13 @@ object ExecuteProcessTest extends App{
   //val content = Source.fromFile("files/Submitdataprocexample.bpmn20.xml").getLines().mkString
   //val processFile ="ExampleProcess.bpmn20.xml"
   val processFile = "Submitdataprocexample.bpmn20.xml"
-  val content = Source.fromFile("files/"+processFile).getLines().mkString
-  val deployment= repositoryService.createDeployment()
-    .addString(processFile,content)
+  val content = Source.fromFile("files/" + processFile).getLines().mkString
+  val deployment = repositoryService.createDeployment()
+    .addString(processFile, content)
     .deploy()
 
-  processEngine.getRepositoryService.createProcessDefinitionQuery().list().map(f=> f.getId).foreach(println)
+  processEngine.getRepositoryService.createProcessDefinitionQuery().list().map(f => f.getId).foreach(println)
   runtimeService.startProcessInstanceByKey("exampleProcessDefn")
-
 
 
 }

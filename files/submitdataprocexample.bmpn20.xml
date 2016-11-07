@@ -1,0 +1,41 @@
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn">
+    <process id="exampleProcessDefn" name="Monthly financial report reminder process">
+        <startEvent id="startevent1" name="Start"></startEvent><serviceTask id="servicetask0" name="Service Task" activiti:class="com.recipegrace.bbd.delegates.storage.DeleteGCloudDelete">
+        <extensionElements>
+            <activiti:field name="url" stringValue="gs://mosambi/testout"/>
+            <activiti:field name="errorVariable" stringValue="servicetask0Error"/>
+        </extensionElements>
+    </serviceTask><serviceTask id="servicetask1" name="Service Task" activiti:class="com.recipegrace.bbd.delegates.dataproc.DataProcClusterCreatorBlocking">
+        <extensionElements>
+            <activiti:field name="clusterName" stringValue="bigbricks-cluster"/>
+            <activiti:field name="projectId" stringValue="hd-www-search"/>
+            <activiti:field name="numOfWorkers"> <activiti:expression>${4}</activiti:expression></activiti:field>
+            <activiti:field name="region" stringValue="global"/>
+            <activiti:field name="image" stringValue="n1-standard-4"/>
+            <activiti:field name="zone" stringValue="us-east1-c"/>
+            <activiti:field name="tags" stringValue="dataproc"/>
+            <activiti:field name="network" stringValue="internal"/>
+            <activiti:field name="properties" stringValue="spark:spark.executor.cores=4"/>
+            <activiti:field name="errorVariable" stringValue="servicetask1Error"/>
+        </extensionElements>
+    </serviceTask><serviceTask id="servicetask2" name="Service Task" activiti:class="com.recipegrace.bbd.delegates.dataproc.SubmitSparkJobToDataProc">
+        <extensionElements>
+            <activiti:field name="clusterName" stringValue="bigbricks-cluster"/>
+            <activiti:field name="projectId" stringValue="hd-www-search"/>
+            <activiti:field name="region" stringValue="global"/>
+            <activiti:field name="mainClass" stringValue="com.recipegrace.biglibrary.electricexamples.CreateData"/>
+            <activiti:field name="sparkProps" stringValue=""/>
+            <activiti:field name="jarURIs" stringValue="gs://mosambi/ElectricTemplate-0.0.1.jar"/>
+            <activiti:field name="programArgs" stringValue="--output,gs://mosambi/testout"/>
+            <activiti:field name="errorVariable" stringValue="servicetask3Error"/>
+        </extensionElements>
+    </serviceTask><serviceTask id="servicetask3" name="Service Task" activiti:class="com.recipegrace.bbd.delegates.dataproc.DataProcClusterDestroyer">
+        <extensionElements>
+            <activiti:field name="clusterName" stringValue="bigbricks-cluster"/>
+            <activiti:field name="projectId" stringValue="hd-www-search"/>
+            <activiti:field name="region" stringValue="global"/>
+            <activiti:field name="errorVariable" stringValue="servicetask2Error"/>
+        </extensionElements>
+    </serviceTask><endEvent id="endevent1" name="End"></endEvent><sequenceFlow id="flow1" sourceRef="servicetask1" targetRef="servicetask2"></sequenceFlow><sequenceFlow id="flow2" sourceRef="servicetask2" targetRef="servicetask3"></sequenceFlow><sequenceFlow id="flow3" sourceRef="servicetask3" targetRef="endevent1"></sequenceFlow><sequenceFlow id="flow4" sourceRef="startevent1" targetRef="servicetask0"></sequenceFlow><sequenceFlow id="flow5" sourceRef="servicetask0" targetRef="servicetask1"></sequenceFlow>
+    </process>
+</definitions>

@@ -1,0 +1,17 @@
+<definitions xmlns:activiti="http://activiti.org/bpmn" id="definitions" targetNamespace="http://activiti.org/bpmn20"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+    <process id="ferosh" name="Monthly financial report reminder process">
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <serviceTask id="servicetask0" name="Service Task"
+                     activiti:class="com.recipegrace.bbd.delegates.storage.DeleteGCloudDelete">
+            <extensionElements>
+                <activiti:field name="url" stringValue="gs://mosambi/testout"/>
+                <activiti:field name="errorVariable" stringValue="servicetask0Error"/>
+            </extensionElements>
+        </serviceTask>
+
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow4" sourceRef="startevent1" targetRef="servicetask0"></sequenceFlow>
+        <sequenceFlow id="flow5" sourceRef="servicetask0" targetRef="endevent1"></sequenceFlow>
+    </process>
+</definitions>

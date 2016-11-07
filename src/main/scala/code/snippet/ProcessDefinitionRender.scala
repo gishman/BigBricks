@@ -1,7 +1,6 @@
 package code.snippet
 
 import code.model.Process
-import code.snippet.Sample._
 import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
 import com.homedepot.bigbricks.validation.ProcessVariableValidation
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
@@ -25,48 +24,47 @@ import scala.xml.NodeSeq
 object selectedBigBricksProcessDefinition extends RequestVar[Box[Process]](Empty)
 
 
-
-class ProcessDefinitionRender extends BigBricksLogging  with ProcessVariableValidation with HTMLCodeGenerator{
+class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValidation with HTMLCodeGenerator {
 
   val homePage = "list.html"
 
-    def deployProcess = {
+  def deployProcess = {
 
 
-      var processVariables:Box[String]=Empty
-      var upload: Box[FileParamHolder] = Empty
+    var processVariables: Box[String] = Empty
+    var upload: Box[FileParamHolder] = Empty
 
-      def process() : JsCmd = {
+    def process(): JsCmd = {
 
-        for{
-          fileUpload <- upload
-          processVars <- processVariables
-        } yield {
-          val definitionContent= new String(fileUpload.file, "iso-8859-1")
-          goodPS(processVars) match {
-            case "" =>{
-              val message = s"${fileUpload.fileName} deployed"
-              val deployId= WorkflowWrapper.deployProcess(fileUpload.fileName,definitionContent)
-              Process.create.processName(fileUpload.fileName).processVariablesName(processVars).deployementId(deployId).save()
-              logAndDisplayMessage(LoggingInfo, message)
-              return net.liftweb.http.S.redirectTo(homePage)
-            }
-            case x:String  => {
-              logAndDisplayMessage(LoggingError,x)
+      for {
+        fileUpload <- upload
+        processVars <- processVariables
+      } yield {
+        val definitionContent = new String(fileUpload.file, "iso-8859-1")
+        goodPS(processVars) match {
+          case "" => {
+            val message = s"${fileUpload.fileName} deployed"
+            val deployId = WorkflowWrapper.deployProcess(fileUpload.fileName, definitionContent)
+            Process.create.processName(fileUpload.fileName).processVariablesName(processVars).deployementId(deployId).save()
+            logAndDisplayMessage(LoggingInfo, message)
+            return net.liftweb.http.S.redirectTo(homePage)
+          }
+          case x: String => {
+            logAndDisplayMessage(LoggingError, x)
 
-            }
           }
         }
-        JsCmds.Noop
-
       }
-
-
-      "#processvariables" #> text("",f=> processVariables=Full(f) ) &
-        "#file" #> fileUpload(f => upload = Full(f)) &
-        "type=submit" #> onSubmitUnit(process)
+      JsCmds.Noop
 
     }
+
+
+    "#processvariables" #> text("", f => processVariables = Full(f)) &
+      "#file" #> fileUpload(f => upload = Full(f)) &
+      "type=submit" #> onSubmitUnit(process)
+
+  }
 
 
   def confirmDelete = {
@@ -74,73 +72,72 @@ class ProcessDefinitionRender extends BigBricksLogging  with ProcessVariableVali
     (for (process <- selectedBigBricksProcessDefinition.is) // find the process
       yield {
         def deleteProcess() {
-          val mesage=s"${process.processName.get} deleted"
+          val mesage = s"${process.processName.get} deleted"
           WorkflowWrapper.deleteDeployment(process.deployementId.get)
           process.delete_!
           net.liftweb.http.S.redirectTo(homePage)
-          logAndDisplayMessage(LoggingInfo,mesage)
+          logAndDisplayMessage(LoggingInfo, mesage)
         }
-        ".process" #> process.processName. get &
-          ".delete" #> submit("Delete", deleteProcess , "class"-> "btn btn-primary")
+        ".process" #> process.processName.get &
+          ".delete" #> submit("Delete", deleteProcess, "class" -> "btn btn-primary")
 
       }) openOr {
       logAndDisplayMessage(LoggingError, "Process not found")
       net.liftweb.http.S.redirectTo(homePage)
     }
   }
-  def list = {
-    val page =Process.findAll(StartAt(0), MaxRows(20))
 
-    def createOperations(x:Process) = {
+  def list = {
+    val page = Process.findAll(StartAt(0), MaxRows(20))
+
+    def createOperations(x: Process) = {
       <td>
         {SHtml.link("delete", () => {
         selectedBigBricksProcessDefinition.set(Full(x))
-      }, <span class="glyphicon glyphicon-remove"></span>)}
-
-        {
-      SHtml.link("start", () => {
+      }, <span class="glyphicon glyphicon-remove"></span>)}{SHtml.link("start", () => {
         selectedBigBricksProcessDefinition.set(Full(x))
       }, <span class="glyphicon glyphicon-play-circle"></span>)}
-        </td>
+      </td>
     }
 
     createTable[Process](page,
-      "ID"-> ( (x:Process) => x.id.toString() ),
-        Process.processName.displayName  -> ( (x:Process) =>  x.processName.get ),
-      Process.deployementId.displayName ->  ( (x:Process) =>  x.deployementId.get ),
-      Process.processVariablesName.displayName ->  ( (x:Process) =>  x.processVariablesName.get ),
+      "ID" -> ((x: Process) => x.id.toString()),
+      Process.processName.displayName -> ((x: Process) => x.processName.get),
+      Process.deployementId.displayName -> ((x: Process) => x.deployementId.get),
+      Process.processVariablesName.displayName -> ((x: Process) => x.processVariablesName.get),
       "Actions" -> createOperations _
     )
 
   }
 }
-class StartProcess extends LiftScreen  with BigBricksLogging{
+
+class StartProcess extends LiftScreen with BigBricksLogging {
 
   val process = selectedBigBricksProcessDefinition.get match {
     case Full(s) => s
     case _ => {
       net.liftweb.http.S.redirectTo("list")
-      Process.create
     }
 
   }
-  val fields = process.getProcessVariables.map(f=> {
-    field(f, "", "class"->"form-control")
+  val fields = process.getProcessVariables.map(f => {
+    field(f, "", "class" -> "form-control")
   }
   )
 
 
   def finish() {
-    val variables =fields.map(f=> f.displayName -> f.get).toMap
-     Schedule(() => {
+    val variables = fields.map(f => f.displayName -> f.get).toMap
+    Schedule(() => {
       WorkflowWrapper.startProcess(process.deployementId.get, variables)
-       logAndDisplayMessage(LoggingInfo,  s"${process.processName.get} finished! ")
+      logAndDisplayMessage(LoggingInfo, s"${process.processName.get} finished! ")
     })
-    logAndDisplayMessage(LoggingInfo,  s"${process.processName.get} started! ")
+    logAndDisplayMessage(LoggingInfo, s"${process.processName.get} started! ")
   }
 
-  override def finishButton = <button class="btn btn-default btn-primary" >Start process</button>
-  override def cancelButton = <button class="btn btn-default btn-primary" >Cancel</button>
+  override def finishButton = <button class="btn btn-default btn-primary">Start process</button>
+
+  override def cancelButton = <button class="btn btn-default btn-primary">Cancel</button>
 
   override def formName: String = "sample"
 

@@ -1,8 +1,5 @@
 package code.snippet
 
-import java.util.Date
-
-import code.lib._
 import code.model.Cluster
 import net.liftweb.common._
 import net.liftweb.http.S._
@@ -14,38 +11,36 @@ import net.liftweb.util.Helpers._
 import scala.xml.{Group, NodeSeq}
 
 class ClusterRender extends PaginatorSnippet[Cluster] {
-  lazy val date: Box[Date] = DependencyFactory.inject[Date] // inject the date
 
-  private object selectedCluster extends RequestVar[Box[Cluster]](Empty)
 
   override def count: Long = Cluster.count()
 
-  override def page: Seq[Cluster] =  Cluster.findAll(StartAt(curPage*itemsPerPage), MaxRows(itemsPerPage))
-
   def clusters: NodeSeq = {
-
-
 
 
     // get and display each of the clusters
     page.flatMap(u => <tr>
 
-      <td>{u.clusterName.get}</td>
       <td>
-        {link("/components/cluster/edit", () => selectedCluster(Full(u)),  <span class="glyphicon glyphicon-edit"></span> )}
-        {link("/components/cluster/delete", () => selectedCluster(Full(u)), <span class="glyphicon glyphicon-remove"></span> )}
+        {u.clusterName.get}
       </td>
-    </tr> )
+      <td>
+        {link("/components/cluster/edit", () => selectedCluster(Full(u)), <span class="glyphicon glyphicon-edit"></span>)}{link("/components/cluster/delete", () => selectedCluster(Full(u)), <span class="glyphicon glyphicon-remove"></span>)}
+      </td>
+    </tr>)
 
   }
+
+  override def page: Seq[Cluster] = Cluster.findAll(StartAt(curPage * itemsPerPage), MaxRows(itemsPerPage))
+
   /**
-   * Confirm deleting a user
-   */
+    * Confirm deleting a user
+    */
   def confirmDelete = {
     (for (cluster <- selectedCluster.is) // find the cluster
       yield {
         def deleteCluster() {
-          notice("Cluster " + (cluster.clusterName ) + " deleted")
+          notice("Cluster " + (cluster.clusterName) + " deleted")
           cluster.delete_!
           redirectTo("/components/cluster/index.html")
         }
@@ -54,39 +49,31 @@ class ClusterRender extends PaginatorSnippet[Cluster] {
         // when the delete button is pressed, call the "deleteCluster"
         // function (which is a closure and bound the "cluster" object
         // in the current content)
-        ".cluster" #> (cluster.clusterName.get ) &
-          ".delete" #> submit("Delete", deleteCluster _, "class"-> "btn btn-primary")
+        ".cluster" #> (cluster.clusterName.get) &
+          ".delete" #> submit("Delete", deleteCluster, "class" -> "btn btn-primary")
 
-        // if the was no ID or the cluster couldn't be found,
+        // if the was no ID or the  _cluster couldn't be found,
         // display an error and redirect
       }) openOr {
-      error("Cluster not found"); redirectTo("/components/cluster/index.html")
+      error("Cluster not found");
+      redirectTo("/components/cluster/index.html")
     }
-  }
-  // called when the form is submitted
-  private def saveCluster(cluster: Cluster) = cluster.validate match {
-    // no validation errors, save the cluster, and go
-    // back to the "list" page
-    case Nil => cluster.save; redirectTo("/components/cluster/index.html")
-
-    // oops... validation errors
-    // display the errors and make sure our selected cluster is still the same
-    case x => error(x); selectedCluster(Full(cluster))
   }
 
   def add(xhtml: Group): NodeSeq =
     selectedCluster.is.openOr(new Cluster).toForm(Empty, saveCluster _) ++ <div class="span3">
-        <button type="submit" class="btn btn-primary">
-          <span class="glyphicon glyphicon-new" aria-hidden="true"></span> Create
-        </button>
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-new" aria-hidden="true"></span>
+        Create
+      </button>
       <a href='/components/cluster/index.html' class="btn btn-default btn-sm">
         Cancel
       </a>
     </div>
 
   /**
-   * Edit a cluster
-   */
+    * Edit a cluster
+    */
 
 
   def edit(xhtml: Group): NodeSeq =
@@ -100,7 +87,8 @@ class ClusterRender extends PaginatorSnippet[Cluster] {
       // call.
       toForm(Empty, saveCluster _) ++ <div class="span3">
       <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+        Save
       </button>
       <a href='/components/cluster/index.html' class="btn btn-default btn-sm">
         Cancel
@@ -110,8 +98,22 @@ class ClusterRender extends PaginatorSnippet[Cluster] {
 
       // bail out if the ID is not supplied or the cluster's not found
     ) openOr {
-      error("Cluster not found"); redirectTo("/components/cluster/index.html")
+      error("Cluster not found");
+      redirectTo("/components/cluster/index.html")
     }
+
+  // called when the form is submitted
+  private def saveCluster(cluster: Cluster) = cluster.validate match {
+    // no validation errors, save the cluster, and go
+    // back to the "list" page
+    case Nil => cluster.save; redirectTo("/components/cluster/index.html")
+
+    // oops... validation errors
+    // display the errors and make sure our selected cluster is still the same
+    case x => error(x); selectedCluster(Full(cluster))
+  }
+
+  private object selectedCluster extends RequestVar[Box[Cluster]](Empty)
 
 }
 

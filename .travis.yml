@@ -22,11 +22,11 @@ env:
 script:
 - ./sbt ++$TRAVIS_SCALA_VERSION compile
 - if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION publish-signed;fi
-- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION clean coverage
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION clean compile
   test ;fi
-after_success:
-- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION coverageReport
-  coveralls;fi
+#after_success:
+#- if [ "$TRAVIS_BRANCH" == "master" ]; then ./sbt ++$TRAVIS_SCALA_VERSION coverageReport
+#  coveralls;fi
 notifications:
   email:
   - on_success: always

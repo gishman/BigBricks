@@ -2,22 +2,28 @@ package code.model
 
 import com.homedepot.bigbricks.ui.HTMLCodeGenerator
 import net.liftweb.mapper._
+
 /**
   * The singleton that has methods for accessing the database
   */
 object Process extends Process with LongKeyedMetaMapper[Process] {
 
 
-  override def fieldOrder = List(processVariablesName,processName,deployementId)
+  override def fieldOrder = List(processVariablesName, processName, deployementId)
 
 }
 
-class Process extends LongKeyedMapper[Process]  with IdPK  with HTMLCodeGenerator{
+class Process extends LongKeyedMapper[Process] with IdPK with HTMLCodeGenerator {
   def getSingleton = Process
 
-  def getProcessVariables = {
-    processVariablesName.get.split(",")
+  def getProcessVariables: Array[String] = {
+
+    processVariablesName.get match {
+      case "" => Array()
+      case x: String => x.split(",", -1)
+    }
   }
+
   // what's the "meta" server
   object processVariablesName extends MappedString(this, 250) {
     override def displayName = "Process variables name"
@@ -34,6 +40,7 @@ class Process extends LongKeyedMapper[Process]  with IdPK  with HTMLCodeGenerato
 
   object deployementId extends MappedString(this, 25) {
     override def displayName = "Deployement Id"
+
     override def toForm = addClassAttribute(super.toForm)
   }
 

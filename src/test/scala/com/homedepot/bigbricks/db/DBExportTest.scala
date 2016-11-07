@@ -15,7 +15,7 @@ import net.liftweb.util.Props
 class DBExportTest extends BaseTest {
 
 
-  test("db test") {
+  ignore("db test") {
 
     if (!DB.jndiJdbcConnAvailable_?) {
       sys.props.put("h2.implicitRelativePath", "true")

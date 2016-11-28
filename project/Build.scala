@@ -25,8 +25,8 @@ object Build extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.17.v20150415" % "container,test",
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
-        "com.recipegrace" %% "bigbricks-delegates" % "0.1.1-SNAPSHOT",
-        "com.recipegrace" %% "bigbricks-core" % "0.1.1-SNAPSHOT"
+        "com.homedepot" %% "bigbricks-delegates" % "0.0.2-SNAPSHOT",
+        "com.homedepot" %% "bigbricks-core" % "0.0.2-SNAPSHOT"
       ),
       publishTo := {
         val nexus = "https://oss.sonatype.org/"
@@ -36,7 +36,7 @@ object Build extends Build {
       credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password),
       pomIncludeRepository := { _ => false },
       pomExtra := (
-        <url>http://recipegrace.com/recipegrace</url>
+        <url>http://homedepot.com</url>
           <licenses>
             <license>
               <name>BSD-style</name>
@@ -45,8 +45,8 @@ object Build extends Build {
             </license>
           </licenses>
           <scm>
-            <url>git@github.com:recipegrace/BigLibrary.git</url>
-            <connection>scm:git:git@github.com:recipegrace/BigLibrary.git</connection>
+            <url>git@github.com:homedepot/BigLibrary.git</url>
+            <connection>scm:git:git@github.com:homedepot/BigLibrary.git</connection>
           </scm>
           <developers>
             <developer>
@@ -58,7 +58,7 @@ object Build extends Build {
       coverallsToken := Some("my-token"),
       resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots")))
   val currentScalaVersion = "2.11.6"
-  val organizationName = "com.recipegrace"
+  val organizationName = "com.homedepot"
   val electricVersion = "0.0.5-SNAPSHOT"
   val activitiVersion = "5.17.0"
   val liftVersion = "3.0-RC4"

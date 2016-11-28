@@ -1,7 +1,8 @@
 package code.snippet
 
 import code.model.Process
-import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bbc.Main
+import com.homedepot.bigbricks.ui.{DeployWorkflow, BigBricksLogging, HTMLCodeGenerator}
 import com.homedepot.bigbricks.validation.ProcessVariableValidation
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Full, Empty, Box}
@@ -24,7 +25,7 @@ import scala.xml.NodeSeq
 object selectedBigBricksProcessDefinition extends RequestVar[Box[Process]](Empty)
 
 
-class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValidation with HTMLCodeGenerator {
+class ProcessDefinitionRender extends   ProcessVariableValidation with HTMLCodeGenerator with DeployWorkflow{
 
   val homePage = "list.html"
 
@@ -33,6 +34,7 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
     var processVariables: Box[String] = Empty
     var upload: Box[FileParamHolder] = Empty
+    var isBBC:Box[Boolean]=Empty
 
     def process(): JsCmd = {
 
@@ -43,10 +45,8 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
         val definitionContent = new String(fileUpload.file, "iso-8859-1")
         goodPS(processVars) match {
           case "" => {
-            val message = s"${fileUpload.fileName} deployed"
-            val deployId = WorkflowWrapper.deployProcess(fileUpload.fileName, definitionContent)
-            Process.create.processName(fileUpload.fileName).processVariablesName(processVars).deployementId(deployId).save()
-            logAndDisplayMessage(LoggingInfo, message)
+            val fileName =fileUpload.fileName
+            deployProcessContent(processVars, definitionContent, fileName,isBBC)
             return net.liftweb.http.S.redirectTo(homePage)
           }
           case x: String => {
@@ -62,9 +62,11 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
     "#processvariables" #> text("", f => processVariables = Full(f)) &
       "#file" #> fileUpload(f => upload = Full(f)) &
+      "#isBBC" #> checkbox(true,f=> isBBC=Full(f)) &
       "type=submit" #> onSubmitUnit(process)
 
   }
+
 
 
   def confirmDelete = {

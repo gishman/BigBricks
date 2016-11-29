@@ -27,16 +27,8 @@ class Boot extends Logger {
 
   def boot {
 
-    if (!DB.jndiJdbcConnAvailable_?) {
-      sys.props.put("h2.implicitRelativePath", "true")
-      val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-        Props.get("db.url") openOr
-          "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-        Props.get("db.user"), Props.get("db.password"))
-      LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
-      DB.defineConnectionManager(util.DefaultConnectionIdentifier, vendor)
-    }
 
+     DBInit.init
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
@@ -117,7 +109,7 @@ class Boot extends Logger {
 
     val userMenu = User.AddUserMenusHere
 
-    val dataMenu = Menu.i("Data") / "data" / "index"
+    val dataMenu = Menu.i("Data") / "data"
     val simpleJob = Menu.i("Submit BBC Flow") / "index"
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"

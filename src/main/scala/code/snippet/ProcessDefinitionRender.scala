@@ -127,7 +127,7 @@ class SubmitBBCFlow extends BSLiftScreen with DeployWorkflow{
     }
   }
   override protected def finish(): Unit = {
-    deployBBC("", bbc.get)
+    deployBBC(bbc.get)
   }
 }
 class StartProcess extends BSLiftScreen{

@@ -1,5 +1,6 @@
 package com.homedepot.bigbricks.workflow
 
+import code.model.Process
 import org.activiti.engine.ProcessEngineConfiguration
 import org.activiti.engine.runtime.ProcessInstance
 import scala.collection.JavaConversions._
@@ -106,6 +107,14 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
         .includeProcessVariables().processInstanceId(processInstanceId).singleResult().getProcessVariables.toList
       case _ => runtimeService.getVariables(processInstanceId).toList.toList
     }
+
+  }
+  def deleteAllProcesses() = {
+
+    Process.findAll().map(f=> f.deployementId.get).foreach( f=> {
+         repositoryService.deleteDeployment(f)
+    })
+    Process.bulkDelete_!!()
 
   }
 

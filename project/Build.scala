@@ -26,7 +26,9 @@ object Build extends Build {
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
         "com.homedepot" %% "bigbricks-delegates" % "0.0.2-SNAPSHOT",
-        "com.homedepot" %% "bigbricks-core" % "0.0.2-SNAPSHOT"
+        "com.homedepot" %% "bigbricks-core" % "0.0.2-SNAPSHOT",
+        "net.lingala.zip4j"%"zip4j"%"1.3.2"
+
       ),
       publishTo := {
         val nexus = "https://oss.sonatype.org/"

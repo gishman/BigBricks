@@ -22,7 +22,7 @@ trait DeployWorkflow extends BigBricksLogging{
         logAndDisplayMessage(LoggingInfo, message)
       }
       case _ => {
-        deployBBC(processVars, definitionContent)
+        deployBBC(definitionContent)
 
       }
     }
@@ -33,20 +33,33 @@ trait DeployWorkflow extends BigBricksLogging{
   def createOrEdit(name: String, definitionContent: String, processVars: String, deployId: String) = {
 
     Process.find(By(Process.processName, name)) match {
-      case Full(x) => x.bbc(definitionContent).save()
+      case Full(x) => x.deployementId(deployId).processName(name).bbc(definitionContent).processVariablesName(processVars).save()
       case _ => Process.create.deployementId(deployId).processName(name).bbc(definitionContent).processVariablesName(processVars).save()
     }
 
   }
 
 
-  def deployBBC(processVars: String, definitionContent: String): Unit = {
+  def deployBBCBatch(definitionContent: String): Unit = {
+    logger.info("BBC file deploying.." +definitionContent)
+    Main.generateProcess(definitionContent) match {
+      case Some(x) => {
+        val name:String = (x  \\ "process" \"@name").text
+        val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
+        val message = s"$name deployed"
+        val processVars =""
+        createOrEdit(name,definitionContent,processVars,deployId)
+      }
+    }
+  }
+  def deployBBC(definitionContent: String): Unit = {
     logger.info("BBC file deploying..")
     Main.generateProcess(definitionContent) match {
       case Some(x) => {
         val name:String = (x  \\ "process" \"@name").text
         val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
         val message = s"$name deployed"
+        val processVars =""
         createOrEdit(name,definitionContent,processVars,deployId)
 
         logAndDisplayMessage(LoggingInfo, message)

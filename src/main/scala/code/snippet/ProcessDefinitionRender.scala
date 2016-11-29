@@ -2,7 +2,7 @@ package code.snippet
 
 import code.model.Process
 import com.homedepot.bbc.Main
-import com.homedepot.bigbricks.ui.{DeployWorkflow, BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bigbricks.ui.{BSLiftScreen, DeployWorkflow, BigBricksLogging, HTMLCodeGenerator}
 import com.homedepot.bigbricks.validation.ProcessVariableValidation
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Full, Empty, Box}
@@ -12,7 +12,7 @@ import net.liftweb.http.js.{JsCmds, JsCmd}
 import net.liftweb.http._
 import net.liftweb.mapper.{MaxRows, StartAt}
 import net.liftweb.util.Helpers._
-import net.liftweb.util.Schedule
+import net.liftweb.util.{FieldError, Schedule}
 
 import scala.xml.NodeSeq
 
@@ -94,11 +94,9 @@ class ProcessDefinitionRender extends   ProcessVariableValidation with HTMLCodeG
 
     def createOperations(x: Process) = {
       <td>
-        {SHtml.link("delete", () => {
-        selectedBigBricksProcessDefinition.set(Full(x))
-      }, <span class="glyphicon glyphicon-remove"></span>)}{SHtml.link("start", () => {
-        selectedBigBricksProcessDefinition.set(Full(x))
-      }, <span class="glyphicon glyphicon-play-circle"></span>)}
+        {SHtml.link("edit", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-edit"></span>)}
+        {SHtml.link("delete", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-remove"></span>)}
+        {SHtml.link("start", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-play-circle"></span>)}
       </td>
     }
 
@@ -112,8 +110,27 @@ class ProcessDefinitionRender extends   ProcessVariableValidation with HTMLCodeG
 
   }
 }
+class SubmitBBCFlow extends BSLiftScreen with DeployWorkflow{
+  override def submitButtonName: String = "Submit BBC Flow"
 
-class StartProcess extends LiftScreen with BigBricksLogging {
+  val content = selectedBigBricksProcessDefinition.get match {
+    case Full(x) => x.bbc.get
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, validBBC _, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  def validBBC(bbc:String):List[FieldError] = {
+
+    Main.generateProcess(bbc) match {
+      case None => Main.errorMessage
+      case _ => Nil
+    }
+  }
+  override protected def finish(): Unit = {
+    deployBBC("", bbc.get)
+  }
+}
+class StartProcess extends BSLiftScreen{
 
   val process = selectedBigBricksProcessDefinition.get match {
     case Full(s) => s
@@ -137,20 +154,5 @@ class StartProcess extends LiftScreen with BigBricksLogging {
     logAndDisplayMessage(LoggingInfo, s"${process.processName.get} started! ")
   }
 
-  override def finishButton = <button class="btn btn-default btn-primary">Start process</button>
-
-  override def cancelButton = <button class="btn btn-default btn-primary">Cancel</button>
-
-  override def formName: String = "sample"
-
-
-  override def defaultFieldNodeSeq: NodeSeq =
-    <div class="form-group">
-      <label class="label field"></label>
-      <span class="value fieldValue"></span>
-      <span class="help"></span>
-      <div class="errors">
-        <div class="error"></div>
-      </div>
-    </div>
+  override def submitButtonName: String = "Start Process"
 }

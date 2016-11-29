@@ -4,6 +4,7 @@ import code.model.Process
 import com.homedepot.bbc.Main
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Full, Box}
+import net.liftweb.mapper.By
 
 /**
   * Created by Ferosh Jacob on 11/25/16.
@@ -29,6 +30,16 @@ trait DeployWorkflow extends BigBricksLogging{
 
   }
 
+  def createOrEdit(name: String, definitionContent: String, processVars: String, deployId: String) = {
+
+    Process.find(By(Process.processName, name)) match {
+      case Full(x) => x.bbc(definitionContent).save()
+      case _ => Process.create.deployementId(deployId).processName(name).bbc(definitionContent).processVariablesName(processVars).save()
+    }
+
+  }
+
+
   def deployBBC(processVars: String, definitionContent: String): Unit = {
     logger.info("BBC file deploying..")
     Main.generateProcess(definitionContent) match {
@@ -36,7 +47,8 @@ trait DeployWorkflow extends BigBricksLogging{
         val name:String = (x  \\ "process" \"@name").text
         val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
         val message = s"$name deployed"
-        Process.create.processName(toBPMN20File(name)).processVariablesName(processVars).deployementId(deployId).save()
+        createOrEdit(name,definitionContent,processVars,deployId)
+
         logAndDisplayMessage(LoggingInfo, message)
       }
       case None => {

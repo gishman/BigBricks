@@ -1,7 +1,7 @@
 package com.homedepot.bigbricks.db
 
 import code.model.Process
-import com.homedepot.bigbricks.data.{BigBricksImport, BigBricksExport}
+import com.homedepot.bigbricks.data.BigBricksExport
 import com.recipegrace.biglibrary.core.BaseTest
 import net.liftweb.db.StandardDBVendor
 import net.liftweb.http.LiftRules

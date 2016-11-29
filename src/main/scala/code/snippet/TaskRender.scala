@@ -1,6 +1,6 @@
 package code.snippet
 
-import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bigbricks.ui.{BSLiftScreen, BigBricksLogging, HTMLCodeGenerator}
 
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb.common.{Empty, Box, Full}
@@ -37,7 +37,7 @@ class TaskRender extends HTMLCodeGenerator with BigBricksLogging {
 
 }
 
-class CompleteTask extends LiftScreen with BigBricksLogging {
+class CompleteTask extends BSLiftScreen {
 
   val taskId = selectedTaskId.get match {
     case Full(s) => s
@@ -58,20 +58,5 @@ class CompleteTask extends LiftScreen with BigBricksLogging {
     logAndDisplayMessage(LoggingInfo, s"${taskId} completed! ")
   }
 
-  override def finishButton = <button class="btn btn-default btn-primary">Complete task</button>
-
-  override def cancelButton = <button class="btn btn-default btn-primary">Cancel</button>
-
-  override def formName: String = "sample"
-
-
-  override def defaultFieldNodeSeq: NodeSeq =
-    <div class="form-group">
-      <label class="label field"></label>
-      <span class="value fieldValue"></span>
-      <span class="help"></span>
-      <div class="errors">
-        <div class="error"></div>
-      </div>
-    </div>
+  override def submitButtonName: String = "Complete Task"
 }

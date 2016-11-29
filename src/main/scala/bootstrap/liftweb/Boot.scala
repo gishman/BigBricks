@@ -41,10 +41,6 @@ class Boot extends Logger {
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, User)
-    Schemifier.schemify(true, Schemifier.infoF _, Project)
-    Schemifier.schemify(true, Schemifier.infoF _, code.model.Template)
-    Schemifier.schemify(true, Schemifier.infoF _, Job)
-    Schemifier.schemify(true, Schemifier.infoF _, Cluster)
     Schemifier.schemify(true, Schemifier.infoF _, Process)
 
     // where to search snippet
@@ -122,10 +118,7 @@ class Boot extends Logger {
     val userMenu = User.AddUserMenusHere
 
     val dataMenu = Menu.i("Data") / "data" / "index"
-
-
-
-
+    val simpleJob = Menu.i("Submit BBC Flow") / "index"
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"
     val taskListMenu = Menu.i("List tasks") / "workflow" / "task" / "list"
@@ -143,14 +136,12 @@ class Boot extends Logger {
 
 
       activeProcessMenu >> LocGroup("lg1"),
+      simpleJob >>LocGroup("lg2"),
       processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
          processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu),
       taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu),
-
-
       ddLabel1 >> LocGroup("topRight") >> PlaceHolder submenus (
-
-        divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
+          divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
         ),
       ddLabel2 >> LocGroup("topRight") >> PlaceHolder submenus dataMenu
 

@@ -4,10 +4,21 @@ import sbt._
 import com.earldouglas.xwp.TomcatPlugin
 import org.scoverage.coveralls.Imports.CoverallsKeys._
 
-object Build extends Build {
-
+  val currentScalaVersion = "2.11.6"
+  val organizationName = "com.homedepot"
+  val electricVersion = "0.0.5-SNAPSHOT"
+  val activitiVersion = "5.17.0"
+  val liftVersion = "3.0-RC4"
+  val username = System.getenv().get("SONATYPE_USERNAME")
+  val password = System.getenv().get("SONATYPE_PASSWORD")
+  val coverallToken = System.getenv().get("COVERALL_TOKEN")
+  val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
+    case x: String => x
+    case null => ""
+  }
+  val ossSnapshots = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  val ossStaging = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
   lazy val bigBricks = Project("BigBricks", file("."))
-
     .enablePlugins(TomcatPlugin)
     .settings(
       pgpPassphrase := Some(passphrase.toCharArray),
@@ -59,18 +70,3 @@ object Build extends Build {
           </developers>),
       coverallsToken := Some("my-token"),
       resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots")))
-  val currentScalaVersion = "2.11.6"
-  val organizationName = "com.homedepot"
-  val electricVersion = "0.0.5-SNAPSHOT"
-  val activitiVersion = "5.17.0"
-  val liftVersion = "3.0-RC4"
-  val username = System.getenv().get("SONATYPE_USERNAME")
-  val password = System.getenv().get("SONATYPE_PASSWORD")
-  val coverallToken = System.getenv().get("COVERALL_TOKEN")
-  val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
-    case x: String => x
-    case null => ""
-  }
-  val ossSnapshots = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-  val ossStaging = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-}

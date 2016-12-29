@@ -41,7 +41,9 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
 
     val currrentTask = taskService.createTaskQuery().processInstanceId(f.getId).singleResult()
     val taskName = if (currrentTask == null) "" else currrentTask.getName
-    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, taskName)
+    val createTime =  if (currrentTask == null) "" else currrentTask.getCreateTime.toString
+
+    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, taskName,createTime)
 
   }
 

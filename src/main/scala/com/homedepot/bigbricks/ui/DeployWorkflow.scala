@@ -59,7 +59,7 @@ trait DeployWorkflow extends BigBricksLogging{
         val name:String = (x  \\ "process" \"@name").text
         val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
         val message = s"$name deployed"
-        val processVars =""
+        val processVars =Main.variables.map(f=>f.name).mkString(",")
         createOrEdit(name,definitionContent,processVars,deployId)
 
         logAndDisplayMessage(LoggingInfo, message)

@@ -80,7 +80,8 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
 
   def listFinishedProcesses(): List[BBProcess] = {
     historyService.createHistoricProcessInstanceQuery()
-      .list().map(processToBBProcess).toList
+      .list().map(f=>processToBBProcess(f,
+      repositoryService.createProcessDefinitionQuery().processDefinitionId(f.getProcessDefinitionId).singleResult().getName)).toList
   }
 
   def listActiveProcesses() = {

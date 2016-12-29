@@ -54,7 +54,7 @@ class ProcessInstanceRender extends HTMLCodeGenerator with BigBricksLogging {
     val page = WorkflowWrapper.listProcesses(currentStatus.getOrElse(""))
     createTable[BBProcess](page,
       "ID" -> ((x: BBProcess) => x.definitionId),
-      "Process Name" -> ((x: BBProcess) => x.name),
+//      "Process Name" -> ((x: BBProcess) => x.name), Looks it is empty
       "Definition Name" -> ((x: BBProcess) => x.definitionName),
       "Process ID" -> ((x: BBProcess) => x.id),
       "State" -> ((x: BBProcess) => x.state),

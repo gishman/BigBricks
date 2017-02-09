@@ -15,7 +15,7 @@ import scala.io.Source
 class DBExportTest extends BaseTest with BBCData {
 
 
-  test("db test export") {
+  ignore("db test export") {
     DBInit.init
 
     val data = exportData
@@ -24,7 +24,7 @@ class DBExportTest extends BaseTest with BBCData {
 
   }
 
-  test("db test import") {
+  ignore("db test import") {
     DBInit.init
 
     val data = importData(Source.fromFile("files/bbc.json").mkString)

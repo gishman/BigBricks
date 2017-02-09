@@ -1,9 +1,9 @@
 package com.homedepot.bigbricks.ui
 
 import code.model.Process
-import com.homedepot.bbc.Main
+import com.homedepot.bbc.{ActivitiMain}
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
-import net.liftweb.common.{Full, Box}
+import net.liftweb.common.{Box, Full}
 import net.liftweb.mapper.By
 
 /**
@@ -42,7 +42,7 @@ trait DeployWorkflow extends BigBricksLogging{
 
   def deployBBCBatch(definitionContent: String): Unit = {
     logger.info("BBC file deploying.." +definitionContent)
-    Main.generateProcess(definitionContent) match {
+    ActivitiMain.generateProcess(definitionContent) match {
       case Some(x) => {
         val name:String = (x  \\ "process" \"@name").text
         val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
@@ -54,18 +54,18 @@ trait DeployWorkflow extends BigBricksLogging{
   }
   def deployBBC(definitionContent: String): Unit = {
     logger.info("BBC file deploying..")
-    Main.generateProcess(definitionContent) match {
+    ActivitiMain.generateProcess(definitionContent) match {
       case Some(x) => {
         val name:String = (x  \\ "process" \"@name").text
         val deployId = WorkflowWrapper.deployProcess(toBPMN20File(name), x.toString())
         val message = s"$name deployed"
-        val processVars =Main.variables.map(f=>f.name).mkString(",")
+        val processVars =ActivitiMain.variables.map(f=>f.name).mkString(",")
         createOrEdit(name,definitionContent,processVars,deployId)
 
         logAndDisplayMessage(LoggingInfo, message)
       }
       case None => {
-        logAndDisplayMessage(LoggingError, Main.errorMessage)
+        logAndDisplayMessage(LoggingError, ActivitiMain.errorMessage)
         None
       }
     }

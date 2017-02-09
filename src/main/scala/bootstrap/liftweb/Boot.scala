@@ -111,6 +111,8 @@ class Boot extends Logger {
 
     val dataMenu = Menu.i("Data") / "data"
     val simpleJob = Menu.i("Submit BBC Flow") / "index"
+    val concourseJob = Menu.i("Concourse Flow") / "concourse"
+    val yamlFIle = Menu.i("YAML file") / "yamlfile"
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"
     val processDefnEditMenu = Menu.i("Edit Process defintion") / "workflow" / "process" / "edit" >> Hidden
@@ -129,10 +131,11 @@ class Boot extends Logger {
 
 
       activeProcessMenu >> LocGroup("lg1"),
+      concourseJob >> LocGroup("lg2"),
       simpleJob >>LocGroup("lg2"),
       processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
          processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu,processDefnEditMenu),
-      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu),
+      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu ,yamlFIle),
       ddLabel1 >> LocGroup("topRight") >> PlaceHolder submenus (
           divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
         ),

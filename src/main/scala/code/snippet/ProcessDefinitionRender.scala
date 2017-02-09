@@ -1,20 +1,20 @@
 package code.snippet
 
 import code.model.Process
-import com.homedepot.bbc.Main
-import com.homedepot.bigbricks.ui.{BSLiftScreen, DeployWorkflow, BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bbc.{ActivitiMain, ConcourseMain}
+import com.homedepot.bigbricks.ui.{BSLiftScreen, BigBricksLogging, DeployWorkflow, HTMLCodeGenerator}
 import com.homedepot.bigbricks.validation.ProcessVariableValidation
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
-import net.liftweb.common.{Full, Empty, Box}
+import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http.S._
 import net.liftweb.http.SHtml._
-import net.liftweb.http.js.{JsCmds, JsCmd}
+import net.liftweb.http.js.{JsCmd, JsCmds}
 import net.liftweb.http._
 import net.liftweb.mapper.{MaxRows, StartAt}
 import net.liftweb.util.Helpers._
 import net.liftweb.util.{FieldError, Schedule}
 
-import scala.xml.NodeSeq
+import scala.xml.{Elem, NodeSeq, Text}
 
 
 /**
@@ -23,6 +23,7 @@ import scala.xml.NodeSeq
 
 
 object selectedBigBricksProcessDefinition extends RequestVar[Box[Process]](Empty)
+object generatedYAML extends SessionVar[Box[String]](Empty)
 
 
 class ProcessDefinitionRender extends   ProcessVariableValidation with HTMLCodeGenerator with DeployWorkflow{
@@ -121,8 +122,8 @@ class SubmitBBCFlow extends BSLiftScreen with DeployWorkflow{
   val bbc = textarea("BBC",content, validBBC _, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
   def validBBC(bbc:String):List[FieldError] = {
 
-    Main.generateProcess(bbc) match {
-      case None => Main.errorMessage
+    ActivitiMain.generateProcess(bbc) match {
+      case None => ActivitiMain.errorMessage
       case _ => Nil
     }
   }
@@ -130,6 +131,49 @@ class SubmitBBCFlow extends BSLiftScreen with DeployWorkflow{
     deployBBC(bbc.get)
   }
 }
+
+class GenerateConcourse extends BSLiftScreen{
+  override def submitButtonName: String = "Generate Concourse Flow"
+
+  val content = selectedBigBricksProcessDefinition.get match {
+    case Full(x) => x.bbc.get
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, validBBC _, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  def validBBC(bbc:String):List[FieldError] = {
+    ConcourseMain.generateProcess(bbc) match {
+      case None => {
+        ConcourseMain.errorMessage
+      }
+      case Some(x) =>  {
+        generatedYAML.set(Full(x))
+        Nil
+      }
+    }
+  }
+  override protected def finish(): Unit = {
+    S.redirectTo("yamlfile")
+  }
+}
+class YAMLFile extends BSLiftScreen {
+  override def submitButtonName: String = "Back"
+
+  val content = generatedYAML.get match {
+    case Full(x) => x
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  override protected def finish(): Unit = {
+    S.redirectTo("index")
+  }
+}
+
+
+
+
+
 class StartProcess extends BSLiftScreen{
 
   val process = selectedBigBricksProcessDefinition.get match {

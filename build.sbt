@@ -2,16 +2,14 @@ import com.typesafe.sbt.SbtPgp.autoImportImpl._
 import sbt.Keys._
 import sbt._
 import com.earldouglas.xwp.TomcatPlugin
-import org.scoverage.coveralls.Imports.CoverallsKeys._
 
-  val currentScalaVersion = "2.11.6"
+  val currentScalaVersion = "2.11.8"
   val organizationName = "com.homedepot"
-  val electricVersion = "0.0.5-SNAPSHOT"
+  val electricVersion = "0.0.6-SNAPSHOT"
   val activitiVersion = "5.17.0"
   val liftVersion = "3.0-RC4"
   val username = System.getenv().get("SONATYPE_USERNAME")
   val password = System.getenv().get("SONATYPE_PASSWORD")
-  val coverallToken = System.getenv().get("COVERALL_TOKEN")
   val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
     case x: String => x
     case null => ""
@@ -36,8 +34,8 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.17.v20150415" % "container,test",
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
-        "com.homedepot" %% "bigbricks-delegates" % "0.0.2-SNAPSHOT",
-        "com.homedepot" %% "bigbricks-core" % "0.0.2-SNAPSHOT",
+        "com.homedepot" %% "bigbricks-delegates" % "0.0.2",
+        "com.homedepot" %% "bigbricks-core" % "0.0.3-SNAPSHOT",
         "net.lingala.zip4j"%"zip4j"%"1.3.2"
 
       ),
@@ -68,5 +66,4 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
               <url>http://www.feroshjacob.com</url>
             </developer>
           </developers>),
-      coverallsToken := Some("my-token"),
-      resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots")))
+      resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots"), ossSnapshots))

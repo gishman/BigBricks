@@ -1,0 +1,124 @@
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:activiti="http://activiti.org/bpmn">
+	<process id="process25" name="CreateDataTest">
+		<startEvent id="theStart" name="Start"></startEvent>
+		<endEvent id="theEnd" name="End"></endEvent>
+		<sequenceFlow id="flow_29" sourceRef="theStart" targetRef="userTask1"></sequenceFlow>
+		<userTask id="userTask1" name="UTCreateClusterTask1"></userTask>
+		<boundaryEvent id="boundarytimer_1" name="TimerCreateClusterTask1" attachedToRef="userTask1" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="CreateClusterTask1" activiti:class="com.homedepot.bbd.delegates.dataproc.DataProcClusterCreatorBlocking" id="serviceTask1">
+			<extensionElements>
+				<activiti:field name="network" stringValue="internal"/>
+				<activiti:field name="image" stringValue="n1-standard-4"/>
+				<activiti:field name="tags" stringValue="dataproc"/>
+				<activiti:field name="projectId" stringValue="hd-www-search"/>
+				<activiti:field name="errorVariable" stringValue="createClusterError1"/>
+				<activiti:field name="properties" stringValue="spark:spark.executor.cores=4"/>
+				<activiti:field name="region" stringValue="global"/>
+				<activiti:field name="numOfWorkers" stringValue="2"/>
+				<activiti:field name="clusterName" stringValue="BB-search-1480121738896"/>
+				<activiti:field name="zone" stringValue="us-east1-c"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_7" sourceRef="userTask1" targetRef="serviceTask1"></sequenceFlow>
+		<sequenceFlow id="flow_8" sourceRef="boundarytimer_1" targetRef="serviceTask1"></sequenceFlow>
+		<userTask id="userTask6" name="UTSparkJobsparkJobName"></userTask>
+		<boundaryEvent id="boundarytimer_6" name="TimerSparkJobsparkJobName" attachedToRef="userTask6" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="SparkJobsparkJobName" activiti:class="com.homedepot.bbd.delegates.dataproc.SubmitSparkJobToDataProc" id="serviceTask6">
+			<extensionElements>
+				<activiti:field name="programArgs" stringValue="--output,gs://mosambi/testout"/>
+				<activiti:field name="projectId" stringValue="hd-www-search"/>
+				<activiti:field name="mainClass" stringValue="com.recipegrace.biglibrary.electricexamples.CreateData"/>
+				<activiti:field name="errorVariable" stringValue="createSparkJobError6"/>
+				<activiti:field name="jarURIs" stringValue="gs://mosambi/ElectricTemplate-0.0.1.jar"/>
+				<activiti:field name="region" stringValue="global"/>
+				<activiti:field name="sparkProps" stringValue=""/>
+				<activiti:field name="clusterName" stringValue="BB-search-1480121738896"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_9" sourceRef="userTask6" targetRef="serviceTask6"></sequenceFlow>
+		<sequenceFlow id="flow_10" sourceRef="boundarytimer_6" targetRef="serviceTask6"></sequenceFlow>
+		<sequenceFlow id="flow_11" sourceRef="serviceTask1" targetRef="userTask6"></sequenceFlow>
+		<userTask id="userTask12" name="UTDeleteGCSLocationTask12"></userTask>
+		<boundaryEvent id="boundarytimer_12" name="TimerDeleteGCSLocationTask12" attachedToRef="userTask12" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="DeleteGCSLocationTask12" activiti:class="com.homedepot.bbd.delegates.storage.DeleteGCloudDelete" id="serviceTask12">
+			<extensionElements>
+				<activiti:field name="url" stringValue="gs://mosambi/testout"/>
+				<activiti:field name="errorVariable" stringValue="deleteClusterError12"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_13" sourceRef="userTask12" targetRef="serviceTask12"></sequenceFlow>
+		<sequenceFlow id="flow_14" sourceRef="boundarytimer_12" targetRef="serviceTask12"></sequenceFlow>
+		<userTask id="userTask15" name="UTSparkJobsparkJobName"></userTask>
+		<boundaryEvent id="boundarytimer_15" name="TimerSparkJobsparkJobName" attachedToRef="userTask15" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="SparkJobsparkJobName" activiti:class="com.homedepot.bbd.delegates.dataproc.SubmitSparkJobToDataProc" id="serviceTask15">
+			<extensionElements>
+				<activiti:field name="programArgs" stringValue="--output,gs://mosambi/testout"/>
+				<activiti:field name="projectId" stringValue="hd-www-search"/>
+				<activiti:field name="mainClass" stringValue="com.recipegrace.biglibrary.electricexamples.CreateData"/>
+				<activiti:field name="errorVariable" stringValue="createSparkJobError15"/>
+				<activiti:field name="jarURIs" stringValue="gs://mosambi/ElectricTemplate-0.0.1.jar"/>
+				<activiti:field name="region" stringValue="global"/>
+				<activiti:field name="sparkProps" stringValue=""/>
+				<activiti:field name="clusterName" stringValue="BB-search-1480121738896"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_16" sourceRef="userTask15" targetRef="serviceTask15"></sequenceFlow>
+		<sequenceFlow id="flow_17" sourceRef="boundarytimer_15" targetRef="serviceTask15"></sequenceFlow>
+		<userTask id="userTask18" name="UTDeleteClusterTask18"></userTask>
+		<boundaryEvent id="boundarytimer_18" name="TimerDeleteClusterTask18" attachedToRef="userTask18" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="DeleteClusterTask18" activiti:class="com.homedepot.bbd.delegates.dataproc.DataProcClusterDestroyer" id="serviceTask18">
+			<extensionElements>
+				<activiti:field name="clusterName" stringValue="BB-search-1480121738896"/>
+				<activiti:field name="region" stringValue="global"/>
+				<activiti:field name="errorVariable" stringValue="deleteClusterError18"/>
+				<activiti:field name="projectId" stringValue="hd-www-search"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_19" sourceRef="userTask18" targetRef="serviceTask18"></sequenceFlow>
+		<sequenceFlow id="flow_20" sourceRef="boundarytimer_18" targetRef="serviceTask18"></sequenceFlow>
+		<sequenceFlow id="flow_21" sourceRef="serviceTask15" targetRef="userTask18"></sequenceFlow>
+		<userTask id="userTask22" name="UTDeleteGCSLocationTask22"></userTask>
+		<boundaryEvent id="boundarytimer_22" name="TimerDeleteGCSLocationTask22" attachedToRef="userTask22" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="DeleteGCSLocationTask22" activiti:class="com.homedepot.bbd.delegates.storage.DeleteGCloudDelete" id="serviceTask22">
+			<extensionElements>
+				<activiti:field name="url" stringValue="gs://mosambi/testout"/>
+				<activiti:field name="errorVariable" stringValue="deleteClusterError22"/>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow_23" sourceRef="userTask22" targetRef="serviceTask22"></sequenceFlow>
+		<sequenceFlow id="flow_24" sourceRef="boundarytimer_22" targetRef="serviceTask22"></sequenceFlow>
+		<sequenceFlow id="flow_26" sourceRef="serviceTask6" targetRef="userTask12"></sequenceFlow>
+		<sequenceFlow id="flow_27" sourceRef="serviceTask12" targetRef="userTask15"></sequenceFlow>
+		<sequenceFlow id="flow_28" sourceRef="serviceTask18" targetRef="userTask22"></sequenceFlow>
+		<sequenceFlow id="flow_30" sourceRef="serviceTask22" targetRef="theEnd"></sequenceFlow>
+	</process>
+</definitions>

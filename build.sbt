@@ -2,12 +2,21 @@ import com.typesafe.sbt.SbtPgp.autoImportImpl._
 import sbt.Keys._
 import sbt._
 import com.earldouglas.xwp.TomcatPlugin
-import org.scoverage.coveralls.Imports.CoverallsKeys._
 
-object Build extends Build {
-
+  val currentScalaVersion = "2.11.8"
+  val organizationName = "com.homedepot"
+  val electricVersion = "0.0.6-SNAPSHOT"
+  val activitiVersion = "5.17.0"
+  val liftVersion = "3.0-RC4"
+  val username = System.getenv().get("SONATYPE_USERNAME")
+  val password = System.getenv().get("SONATYPE_PASSWORD")
+  val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
+    case x: String => x
+    case null => ""
+  }
+  val ossSnapshots = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  val ossStaging = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
   lazy val bigBricks = Project("BigBricks", file("."))
-
     .enablePlugins(TomcatPlugin)
     .settings(
       pgpPassphrase := Some(passphrase.toCharArray),
@@ -25,8 +34,10 @@ object Build extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.17.v20150415" % "container,test",
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
-        "com.recipegrace" %% "bigbricks-delegates" % "0.1.1-SNAPSHOT",
-        "com.recipegrace" %% "bigbricks-core" % "0.1.1-SNAPSHOT"
+        "com.homedepot" %% "bigbricks-delegates" % "0.0.2",
+        "com.homedepot" %% "bigbricks-core" % "0.0.3-SNAPSHOT",
+        "net.lingala.zip4j"%"zip4j"%"1.3.2"
+
       ),
       publishTo := {
         val nexus = "https://oss.sonatype.org/"
@@ -36,7 +47,7 @@ object Build extends Build {
       credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password),
       pomIncludeRepository := { _ => false },
       pomExtra := (
-        <url>http://recipegrace.com/recipegrace</url>
+        <url>http://homedepot.com</url>
           <licenses>
             <license>
               <name>BSD-style</name>
@@ -45,8 +56,8 @@ object Build extends Build {
             </license>
           </licenses>
           <scm>
-            <url>git@github.com:recipegrace/BigLibrary.git</url>
-            <connection>scm:git:git@github.com:recipegrace/BigLibrary.git</connection>
+            <url>git@github.com:homedepot/BigLibrary.git</url>
+            <connection>scm:git:git@github.com:homedepot/BigLibrary.git</connection>
           </scm>
           <developers>
             <developer>
@@ -55,20 +66,4 @@ object Build extends Build {
               <url>http://www.feroshjacob.com</url>
             </developer>
           </developers>),
-      coverallsToken := Some("my-token"),
-      resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots")))
-  val currentScalaVersion = "2.11.6"
-  val organizationName = "com.recipegrace"
-  val electricVersion = "0.0.5-SNAPSHOT"
-  val activitiVersion = "5.17.0"
-  val liftVersion = "3.0-RC4"
-  val username = System.getenv().get("SONATYPE_USERNAME")
-  val password = System.getenv().get("SONATYPE_PASSWORD")
-  val coverallToken = System.getenv().get("COVERALL_TOKEN")
-  val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
-    case x: String => x
-    case null => ""
-  }
-  val ossSnapshots = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-  val ossStaging = "Sonatype OSS Snapshots" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-}
+      resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots"), ossSnapshots))

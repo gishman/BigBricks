@@ -1,37 +1,37 @@
 package com.homedepot.bigbricks.db
 
+import bootstrap.liftweb.DBInit
 import code.model.Process
-import com.homedepot.bigbricks.data.{BigBricksImport, BigBricksExport}
+import com.homedepot.bigbricks.data.BBCData
 import com.recipegrace.biglibrary.core.BaseTest
-import net.liftweb.db.StandardDBVendor
-import net.liftweb.http.LiftRules
-import net.liftweb.mapper.DB
-import net.liftweb.util
-import net.liftweb.util.Props
+import net.liftweb.json.Extraction._
+import net.liftweb.json._
+
+import scala.io.Source
 
 /**
   * Created by fjacob on 8/21/15.
   */
-class DBExportTest extends BaseTest {
+class DBExportTest extends BaseTest with BBCData {
 
 
-  ignore("db test") {
+  ignore("db test export") {
+    DBInit.init
 
-    if (!DB.jndiJdbcConnAvailable_?) {
-      sys.props.put("h2.implicitRelativePath", "true")
-      val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-        Props.get("db.url") openOr
-          "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-        Props.get("db.user"), Props.get("db.password"))
-      LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
-      DB.defineConnectionManager(util.DefaultConnectionIdentifier, vendor)
-    }
+    val data = exportData
 
-    /*      val content = BigBricksExport. exportBigBricks()
-          BigBricksImport. importBigBricks(content)
-          content.startsWith("{\"clusters\":[],") shouldEqual true
-    */
-    Process.findAll().head.getProcessVariables should have size 0
+    data shouldBe ""
+
+  }
+
+  ignore("db test import") {
+    DBInit.init
+
+    val data = importData(Source.fromFile("files/bbc.json").mkString)
+
+    data shouldBe ""
+
+
 
   }
 

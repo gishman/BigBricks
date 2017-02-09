@@ -1,5 +1,6 @@
 package bootstrap.liftweb
 
+import com.homedepot.bigbricks.ui.ClusterRunningCheck
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
 import net.liftweb._
 import net.liftweb.http.js.jquery.JQueryArtifacts
@@ -26,24 +27,12 @@ class Boot extends Logger {
 
   def boot {
 
-    if (!DB.jndiJdbcConnAvailable_?) {
-      sys.props.put("h2.implicitRelativePath", "true")
-      val vendor = new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-        Props.get("db.url") openOr
-          "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-        Props.get("db.user"), Props.get("db.password"))
-      LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
-      DB.defineConnectionManager(util.DefaultConnectionIdentifier, vendor)
-    }
 
+     DBInit.init
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
     Schemifier.schemify(true, Schemifier.infoF _, User)
-    Schemifier.schemify(true, Schemifier.infoF _, Project)
-    Schemifier.schemify(true, Schemifier.infoF _, code.model.Template)
-    Schemifier.schemify(true, Schemifier.infoF _, Job)
-    Schemifier.schemify(true, Schemifier.infoF _, Cluster)
     Schemifier.schemify(true, Schemifier.infoF _, Process)
 
     // where to search snippet
@@ -102,7 +91,10 @@ class Boot extends Logger {
     }
     // Make a transaction span the whole HTTP request
     info(s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
+
+    ClusterRunningCheck.checkAnyClustersRunning
     S.addAround(DB.buildLoanWrapper)
+
   }
 
   object Site {
@@ -112,46 +104,22 @@ class Boot extends Logger {
     val divider1 = Menu("divider1") / "divider1"
     val ddLabel1 = Menu.i("UserDDLabel") / "ddlabel1"
     val ddLabel2 = Menu.i("Components") / "ddlabel2"
-    val home = Menu.i("Home") / "index"
     val processLabel = Menu.i("Process") / "ddlabel3"
     val taskLabel = Menu.i("Task") / "ddlabel4"
 
     val userMenu = User.AddUserMenusHere
 
-    val dataMenu = Menu.i("Data") / "data" / "index"
-
-
-    val jobMenu = (Menu.i("Jobs") / "components" / "job" / "index")
-    //.rule(loggedIn)
-    val editJobMenu = Menu.i("Edit Job") / "components" / "job" / "edit" >> Hidden
-    val addJobMenu = Menu.i("Add Job") / "components" / "job" / "add" >> Hidden
-    val deleteJobMenu = Menu.i("Delete Job") / "components" / "job" / "delete" >> Hidden
-
-
-    val projectMenu = (Menu.i("Projects") / "components" / "project" / "index")
-    //.rule(loggedIn)
-    val editProjectMenu = Menu.i("Edit Project") / "components" / "project" / "edit" >> Hidden
-    val addProjectMenu = Menu.i("Add Project") / "components" / "project" / "add" >> Hidden
-    val deleteProjectMenu = Menu.i("Delete Project") / "components" / "project" / "delete" >> Hidden
-
-    val templateMenu = (Menu.i("Templates") / "components" / "template" / "index")
-    //.rule(loggedIn)
-    val editTemplateMenu = Menu.i("Edit Template") / "components" / "template" / "edit" >> Hidden
-    val addTemplateMenu = Menu.i("Add Template") / "components" / "template" / "add" >> Hidden
-    val deleteTemplateMenu = Menu.i("Delete Template") / "components" / "template" / "delete" >> Hidden
-
-    val clusterMenu = (Menu.i("Clusters") / "components" / "cluster" / "index")
-    //.rule(loggedIn)
-    val editClusterMenu = Menu.i("Edit Cluster") / "components" / "cluster" / "edit" >> Hidden
-    val addClusterMenu = Menu.i("Add Cluster") / "components" / "cluster" / "add" >> Hidden
-    val deleteClusterMenu = Menu.i("Delete Cluster") / "components" / "cluster" / "delete" >> Hidden
-
+    val dataMenu = Menu.i("Data") / "data"
+    val simpleJob = Menu.i("Submit BBC Flow") / "index"
+    val concourseJob = Menu.i("Concourse Flow") / "concourse"
+    val yamlFIle = Menu.i("YAML file") / "yamlfile"
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"
+    val processDefnEditMenu = Menu.i("Edit Process defintion") / "workflow" / "process" / "edit" >> Hidden
     val taskListMenu = Menu.i("List tasks") / "workflow" / "task" / "list"
     val completeTaskMenu = Menu.i("Complete task") / "workflow" / "task" / "completetask" >> Hidden
 
-    val activeProcessMenu = Menu.i("Processes") / "workflow" / "process" / "processinstances"
+    val activeProcessMenu = Menu.i("Home") / "workflow" / "process" / "processinstances"
     val processDetailsMenu = Menu.i("Process details") / "workflow" / "process" / "processdetails" >> Hidden
 
     val deployProcessMenu = Menu.i("Deploy process") / "workflow" / "process" / "deploy"
@@ -162,28 +130,17 @@ class Boot extends Logger {
     def sitemap = SiteMap(
 
 
-      home >> LocGroup("lg1")
-      , editJobMenu, addJobMenu, deleteJobMenu
-      , editProjectMenu, addProjectMenu, deleteProjectMenu
-      , editTemplateMenu, addTemplateMenu, deleteTemplateMenu
-      , editClusterMenu, addClusterMenu, deleteClusterMenu,
-
+      activeProcessMenu >> LocGroup("lg1"),
+      concourseJob >> LocGroup("lg2"),
+      simpleJob >>LocGroup("lg2"),
       processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
-        activeProcessMenu, processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu),
-      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu),
-
-
+         processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu,processDefnEditMenu),
+      taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu ,yamlFIle),
       ddLabel1 >> LocGroup("topRight") >> PlaceHolder submenus (
-
-        divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
+          divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
         ),
-      ddLabel2 >> LocGroup("topRight") >> PlaceHolder submenus(
-        projectMenu,
-        templateMenu,
-        clusterMenu,
-        jobMenu,
-        dataMenu
-        )
+      ddLabel2 >> LocGroup("topRight") >> PlaceHolder submenus dataMenu
+
     )
   }
 

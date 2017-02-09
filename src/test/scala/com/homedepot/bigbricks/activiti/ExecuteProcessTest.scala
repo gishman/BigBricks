@@ -22,15 +22,15 @@ object ExecuteProcessTest extends App {
   val repositoryService = processEngine.getRepositoryService()
   //val content = Source.fromFile("files/Submitdataprocexample.bpmn20.xml").getLines().mkString
   //val processFile ="ExampleProcess.bpmn20.xml"
-  val processFile = "Submitdataprocexample.bpmn20.xml"
+  val processFile = "TwoDelete.bpmn20.xml"
   val content = Source.fromFile("files/" + processFile).getLines().mkString
   val deployment = repositoryService.createDeployment()
     .addString(processFile, content)
     .deploy()
 
   processEngine.getRepositoryService.createProcessDefinitionQuery().list().map(f => f.getId).foreach(println)
-  runtimeService.startProcessInstanceByKey("exampleProcessDefn")
+  runtimeService.startProcessInstanceByKey("process7")
 
-
+  System.exit(0)
 }
 

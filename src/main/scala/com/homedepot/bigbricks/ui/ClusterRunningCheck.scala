@@ -29,7 +29,7 @@ object ClusterRunningCheck extends BigBricksLogging {
     def checkClustersRunning() = {
 
       logger.info("running cluster checking...")
-      longRunningClusters("hd-www-search")+longRunningClusters("hd-www-dev") match {
+      longRunningClusters("hd-www-search") match {
         case "" => ""
         case x:String  => {
 

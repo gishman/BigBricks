@@ -110,8 +110,8 @@ class Boot extends Logger {
     val userMenu = User.AddUserMenusHere
 
     val dataMenu = Menu.i("Data") / "data"
-    val simpleJob = Menu.i("Submit BBC Flow") / "index"
-    val concourseJob = Menu.i("Concourse Flow") / "concourse"
+    val simpleJob = Menu.i("Submit BBC Flow") / "activiti"
+    val concourseJob = Menu.i("Concourse Flow") / "index"
     val yamlFIle = Menu.i("YAML file") / "yamlfile"
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"

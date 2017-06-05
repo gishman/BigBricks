@@ -1,5 +1,6 @@
 package com.homedepot.bigbricks.workflow
 
+import code.model.Process
 import org.activiti.engine.ProcessEngineConfiguration
 import org.activiti.engine.runtime.ProcessInstance
 import scala.collection.JavaConversions._
@@ -40,7 +41,9 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
 
     val currrentTask = taskService.createTaskQuery().processInstanceId(f.getId).singleResult()
     val taskName = if (currrentTask == null) "" else currrentTask.getName
-    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, taskName)
+    val createTime =  if (currrentTask == null) "" else currrentTask.getCreateTime.toString
+
+    BBProcess(f.getId, f.getName, f.getProcessDefinitionId, f.getProcessDefinitionName, taskName,createTime)
 
   }
 
@@ -79,7 +82,8 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
 
   def listFinishedProcesses(): List[BBProcess] = {
     historyService.createHistoricProcessInstanceQuery()
-      .list().map(processToBBProcess).toList
+      .list().map(f=>processToBBProcess(f,
+      repositoryService.createProcessDefinitionQuery().processDefinitionId(f.getProcessDefinitionId).singleResult().getName)).toList
   }
 
   def listActiveProcesses() = {
@@ -106,6 +110,14 @@ object WorkflowWrapper extends ActivitiToBigBricksConverters {
         .includeProcessVariables().processInstanceId(processInstanceId).singleResult().getProcessVariables.toList
       case _ => runtimeService.getVariables(processInstanceId).toList.toList
     }
+
+  }
+  def deleteAllProcesses() = {
+
+    Process.findAll().map(f=> f.deployementId.get).foreach( f=> {
+         repositoryService.deleteDeployment(f)
+    })
+    Process.bulkDelete_!!()
 
   }
 

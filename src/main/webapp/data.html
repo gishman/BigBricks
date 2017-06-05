@@ -1,0 +1,36 @@
+
+<div id="main" data-lift="surround?with=default;at=content">
+<div class="panel panel-default">
+
+    <div class="panel-heading"> <h3 class="panel-title">Export BBC files</h3></div>
+    <div class="panel-body">
+        <form data-lift="ExportBBC.exportBBC">
+            <input type="submit"  class="btn btn-default btn-primary" value="Export BBC">
+        </form>
+
+    </div>
+
+
+
+    <div class="panel-heading"> <h3 class="panel-title">BackUp BBC files</h3></div>
+    <div class="panel-body">
+        <form data-lift="BackupBBC">
+            <input type="submit"  class="btn btn-default btn-primary" value="Backup BBC">
+        </form>
+
+
+    </div>
+    <div class="panel-heading"> <h3 class="panel-title">Import from Zip file</h3></div>
+    <div class="panel-body">
+        <form data-lift="ImportBBC?form=post;multipart=true">
+            <div class="form-group">
+                <label for="file" > BBCBackup zip file</label>
+                <input id="file" class="form-control" name="file" placeholder="Enter Local file path here!">
+            </div>
+
+            <input type="submit"  class="btn btn-default btn-primary" value="Import all BBC files">
+        </form>
+
+    </div>
+</div>
+    </div>

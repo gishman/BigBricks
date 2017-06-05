@@ -1,19 +1,20 @@
 package code.snippet
 
 import code.model.Process
-import com.homedepot.bigbricks.ui.{BigBricksLogging, HTMLCodeGenerator}
+import com.homedepot.bbc.{ActivitiMain, ConcourseMain}
+import com.homedepot.bigbricks.ui.{BSLiftScreen, BigBricksLogging, DeployWorkflow, HTMLCodeGenerator}
 import com.homedepot.bigbricks.validation.ProcessVariableValidation
 import com.homedepot.bigbricks.workflow.WorkflowWrapper
-import net.liftweb.common.{Full, Empty, Box}
+import net.liftweb.common.{Box, Empty, Full}
 import net.liftweb.http.S._
 import net.liftweb.http.SHtml._
-import net.liftweb.http.js.{JsCmds, JsCmd}
+import net.liftweb.http.js.{JsCmd, JsCmds}
 import net.liftweb.http._
 import net.liftweb.mapper.{MaxRows, StartAt}
 import net.liftweb.util.Helpers._
-import net.liftweb.util.Schedule
+import net.liftweb.util.{FieldError, Schedule}
 
-import scala.xml.NodeSeq
+import scala.xml.{Elem, NodeSeq, Text}
 
 
 /**
@@ -22,9 +23,10 @@ import scala.xml.NodeSeq
 
 
 object selectedBigBricksProcessDefinition extends RequestVar[Box[Process]](Empty)
+object generatedYAML extends SessionVar[Box[String]](Empty)
 
 
-class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValidation with HTMLCodeGenerator {
+class ProcessDefinitionRender extends   ProcessVariableValidation with HTMLCodeGenerator with DeployWorkflow{
 
   val homePage = "list.html"
 
@@ -33,6 +35,7 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
     var processVariables: Box[String] = Empty
     var upload: Box[FileParamHolder] = Empty
+    var isBBC:Box[Boolean]=Empty
 
     def process(): JsCmd = {
 
@@ -43,10 +46,8 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
         val definitionContent = new String(fileUpload.file, "iso-8859-1")
         goodPS(processVars) match {
           case "" => {
-            val message = s"${fileUpload.fileName} deployed"
-            val deployId = WorkflowWrapper.deployProcess(fileUpload.fileName, definitionContent)
-            Process.create.processName(fileUpload.fileName).processVariablesName(processVars).deployementId(deployId).save()
-            logAndDisplayMessage(LoggingInfo, message)
+            val fileName =fileUpload.fileName
+            deployProcessContent(processVars, definitionContent, fileName,isBBC)
             return net.liftweb.http.S.redirectTo(homePage)
           }
           case x: String => {
@@ -62,9 +63,11 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
     "#processvariables" #> text("", f => processVariables = Full(f)) &
       "#file" #> fileUpload(f => upload = Full(f)) &
+      "#isBBC" #> checkbox(true,f=> isBBC=Full(f)) &
       "type=submit" #> onSubmitUnit(process)
 
   }
+
 
 
   def confirmDelete = {
@@ -92,11 +95,9 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
     def createOperations(x: Process) = {
       <td>
-        {SHtml.link("delete", () => {
-        selectedBigBricksProcessDefinition.set(Full(x))
-      }, <span class="glyphicon glyphicon-remove"></span>)}{SHtml.link("start", () => {
-        selectedBigBricksProcessDefinition.set(Full(x))
-      }, <span class="glyphicon glyphicon-play-circle"></span>)}
+        {SHtml.link("edit", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-edit"></span>)}
+        {SHtml.link("delete", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-remove"></span>)}
+        {SHtml.link("start", () => { selectedBigBricksProcessDefinition.set(Full(x)) }, <span class="glyphicon glyphicon-play-circle"></span>)}
       </td>
     }
 
@@ -110,8 +111,70 @@ class ProcessDefinitionRender extends BigBricksLogging with ProcessVariableValid
 
   }
 }
+class SubmitBBCFlow extends BSLiftScreen with DeployWorkflow{
+  override def submitButtonName: String = "Submit BBC Flow"
 
-class StartProcess extends LiftScreen with BigBricksLogging {
+  val content = selectedBigBricksProcessDefinition.get match {
+    case Full(x) => x.bbc.get
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, validBBC _, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  def validBBC(bbc:String):List[FieldError] = {
+
+    ActivitiMain.generateProcess(bbc) match {
+      case None => ActivitiMain.errorMessage
+      case _ => Nil
+    }
+  }
+  override protected def finish(): Unit = {
+    deployBBC(bbc.get)
+  }
+}
+
+class GenerateConcourse extends BSLiftScreen{
+  override def submitButtonName: String = "Generate Concourse Flow"
+
+  val content = selectedBigBricksProcessDefinition.get match {
+    case Full(x) => x.bbc.get
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, validBBC _, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  def validBBC(bbc:String):List[FieldError] = {
+    ConcourseMain.generateProcess(bbc) match {
+      case None => {
+        ConcourseMain.errorMessage
+      }
+      case Some(x) =>  {
+        generatedYAML.set(Full(x))
+        Nil
+      }
+    }
+  }
+  override protected def finish(): Unit = {
+    S.redirectTo("yamlfile")
+  }
+}
+class YAMLFile extends BSLiftScreen {
+  override def submitButtonName: String = "Back"
+
+  val content = generatedYAML.get match {
+    case Full(x) => x
+    case _ =>""
+
+  }
+  val bbc = textarea("BBC",content, "class" -> "form-control", "rows" -> "25", "style"->"font-family:monospace;")
+  override protected def finish(): Unit = {
+    S.redirectTo("index")
+  }
+}
+
+
+
+
+
+class StartProcess extends BSLiftScreen{
 
   val process = selectedBigBricksProcessDefinition.get match {
     case Full(s) => s
@@ -135,20 +198,5 @@ class StartProcess extends LiftScreen with BigBricksLogging {
     logAndDisplayMessage(LoggingInfo, s"${process.processName.get} started! ")
   }
 
-  override def finishButton = <button class="btn btn-default btn-primary">Start process</button>
-
-  override def cancelButton = <button class="btn btn-default btn-primary">Cancel</button>
-
-  override def formName: String = "sample"
-
-
-  override def defaultFieldNodeSeq: NodeSeq =
-    <div class="form-group">
-      <label class="label field"></label>
-      <span class="value fieldValue"></span>
-      <span class="help"></span>
-      <div class="errors">
-        <div class="error"></div>
-      </div>
-    </div>
+  override def submitButtonName: String = "Start Process"
 }

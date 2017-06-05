@@ -1,0 +1,47 @@
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:activiti="http://activiti.org/bpmn">
+	<process id="process7" name="exampleProject">
+		<startEvent id="theStart" name="Start"></startEvent>
+		<endEvent id="theEnd" name="End"> </endEvent>
+		<userTask id="userTask3" name="UTDeleteGCSLocationTask3"></userTask>
+		<boundaryEvent id="boundarytimer3" name="Timer" attachedToRef="userTask3" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<serviceTask name="DeleteGCSLocationTask3" activiti:class="com.homedepot.bbd.delegates.storage.DeleteGCloudDelete" id="serviceTask3">
+			<extensionElements>
+				<activiti:field name="url" stringValue="gs://mosambi/testout"/>
+				<activiti:field name="errorVariable" stringValue="deleteClusterError3"/>
+			</extensionElements>
+		</serviceTask>
+		<userTask id="userTask5" name="UTDeleteGCSLocationTask5"></userTask>
+		<boundaryEvent id="boundarytimer5" name="Timer" attachedToRef="userTask5" cancelActivity="true">
+			<timerEventDefinition>
+				<timeDuration>PT1S</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<serviceTask name="DeleteGCSLocationTask5" id="serviceTask5" activiti:class="com.recipegrace.bbd.delegates.dataproc.DataProcClusterDestroyer">
+		<extensionElements>
+			<activiti:field name="clusterName" stringValue="bigbricks-cluster"/>
+			<activiti:field name="projectId" stringValue="hd-www-search"/>
+			<activiti:field name="region" stringValue="global"/>
+			<activiti:field name="errorVariable" stringValue="servicetask2Error"/>
+		</extensionElements>
+		</serviceTask>
+
+		<sequenceFlow id="flow_9" sourceRef="theStart" targetRef="serviceTask3"></sequenceFlow>
+		<sequenceFlow id="flow_4" sourceRef="serviceTask3" targetRef="userTask3"></sequenceFlow>
+		<sequenceFlow id="flow_8" sourceRef="userTask3" targetRef="serviceTask5"></sequenceFlow>
+		<sequenceFlow id="flow_6" sourceRef="serviceTask5" targetRef="userTask5"></sequenceFlow>
+		<sequenceFlow id="flow6" sourceRef="boundarytimer3" targetRef="serviceTask5"></sequenceFlow>
+		<sequenceFlow id="flow11" sourceRef="boundarytimer5" targetRef="theEnd"></sequenceFlow>
+
+		<sequenceFlow id="flow_10" sourceRef="userTask5" targetRef="theEnd"></sequenceFlow>
+	</process>
+</definitions>

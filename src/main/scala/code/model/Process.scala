@@ -44,6 +44,12 @@ class Process extends LongKeyedMapper[Process] with IdPK with HTMLCodeGenerator 
     override def toForm = addClassAttribute(super.toForm)
   }
 
+  object bbc extends MappedString(this, 2500) {
+    override def displayName = "BBC"
+
+    override def toForm = addClassAttribute(super.toForm)
+  }
+
 }
 
 

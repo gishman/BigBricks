@@ -25,8 +25,8 @@ object Build extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.17.v20150415" % "container,test",
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
-        "com.recipegrace" %% "bigbricks-delegates" % "0.1.1-SNAPSHOT",
-        "com.recipegrace" %% "bigbricks-core" % "0.1.1-SNAPSHOT"
+        "com.homedepot" %% "bigbricks-delegates" % "0.0.3-SNAPSHOT",
+        "com.homedepot" %% "bigbricks-core" % "0.0.3-SNAPSHOT"
       ),
       publishTo := {
         val nexus = "https://oss.sonatype.org/"
@@ -59,7 +59,7 @@ object Build extends Build {
       resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots")))
   val currentScalaVersion = "2.11.6"
   val organizationName = "com.recipegrace"
-  val electricVersion = "0.0.5-SNAPSHOT"
+  val electricVersion = "0.0.6-SNAPSHOT"
   val activitiVersion = "5.17.0"
   val liftVersion = "3.0-RC4"
   val username = System.getenv().get("SONATYPE_USERNAME")

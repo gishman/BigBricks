@@ -28,12 +28,12 @@ class Boot extends Logger {
   def boot {
 
 
-     DBInit.init
+    // DBInit.init
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
-    Schemifier.schemify(true, Schemifier.infoF _, User)
-    Schemifier.schemify(true, Schemifier.infoF _, Process)
+    //Schemifier.schemify(true, Schemifier.infoF _, User)
+   // Schemifier.schemify(true, Schemifier.infoF _, Process)
 
     // where to search snippet
     LiftRules.addToPackages("code")
@@ -90,10 +90,10 @@ class Boot extends Logger {
       )))
     }
     // Make a transaction span the whole HTTP request
-    info(s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
+    //info(s"Workflow intiated with active workflows:${WorkflowWrapper.countDefintions}")
 
-    ClusterRunningCheck.checkAnyClustersRunning
-    S.addAround(DB.buildLoanWrapper)
+    //ClusterRunningCheck.checkAnyClustersRunning
+    //S.addAround(DB.buildLoanWrapper)
 
   }
 
@@ -110,9 +110,14 @@ class Boot extends Logger {
     val userMenu = User.AddUserMenusHere
 
     val dataMenu = Menu.i("Data") / "data"
+<<<<<<< HEAD
+    val concourseJob = Menu.i("Concourse Flow") / "index"
+    val yamlFIle = Menu.i("YAML file") / "yamlfile" >> Hidden
+=======
     val simpleJob = Menu.i("Submit BBC Flow") / "activiti"
     val concourseJob = Menu.i("Concourse Flow") / "index"
     val yamlFIle = Menu.i("YAML file") / "yamlfile"
+>>>>>>> aba4cde0045f12743953d1b176aad30b045c82c9
 
     val processDefnMenu = Menu.i("Process defintion") / "workflow" / "process" / "list"
     val processDefnEditMenu = Menu.i("Edit Process defintion") / "workflow" / "process" / "edit" >> Hidden
@@ -130,16 +135,17 @@ class Boot extends Logger {
     def sitemap = SiteMap(
 
 
-      activeProcessMenu >> LocGroup("lg1"),
+//      activeProcessMenu >> LocGroup("lg1"),
       concourseJob >> LocGroup("lg2"),
-      simpleJob >>LocGroup("lg2"),
-      processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
+      yamlFIle >> LocGroup("lg2"),
+  /*    processLabel >> LocGroup("topRight") >> PlaceHolder submenus(
          processDefnMenu, deployProcessMenu, startProcessMenu, deleteProcessMenu, processDetailsMenu,processDefnEditMenu),
       taskLabel >> LocGroup("topRight") >> PlaceHolder submenus(taskListMenu, completeTaskMenu ,yamlFIle),
       ddLabel1 >> LocGroup("topRight") >> PlaceHolder submenus (
           divider1 >> FoBoBs.BSLocInfo.Divider >> userMenu
         ),
       ddLabel2 >> LocGroup("topRight") >> PlaceHolder submenus dataMenu
+      */
 
     )
   }

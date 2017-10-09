@@ -1,13 +1,12 @@
-import com.typesafe.sbt.SbtPgp.autoImportImpl._
 import sbt.Keys._
 import sbt._
-import com.earldouglas.xwp.TomcatPlugin
+import com.typesafe.sbt.SbtPgp.autoImportImpl._
 
-  val currentScalaVersion = "2.11.8"
+
+val currentScalaVersion = "2.12.2"
   val organizationName = "com.homedepot"
-  val electricVersion = "0.0.6-SNAPSHOT"
   val activitiVersion = "5.17.0"
-  val liftVersion = "3.0-RC4"
+  val liftVersion = "3.1.0"
   val username = System.getenv().get("SONATYPE_USERNAME")
   val password = System.getenv().get("SONATYPE_PASSWORD")
   val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
@@ -25,7 +24,6 @@ import com.earldouglas.xwp.TomcatPlugin
       scalaVersion := currentScalaVersion,
       organization := organizationName,
       libraryDependencies ++= Seq(
-        "com.recipegrace" %% "core" % electricVersion % "test",
         "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
         "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
         "net.liftmodules" %% "fobo_3.0" % "1.7" % "compile",
@@ -34,7 +32,7 @@ import com.earldouglas.xwp.TomcatPlugin
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.17.v20150415" % "container,test",
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
-        "com.homedepot" %% "bigbricks-delegates" % "0.0.2",
+        "com.homedepot" %% "bigbricks-delegates" % "0.0.5-SNAPSHOT",
         "com.homedepot" %% "bigbricks-core" % "0.0.3-SNAPSHOT",
         "net.lingala.zip4j"%"zip4j"%"1.3.2"
 

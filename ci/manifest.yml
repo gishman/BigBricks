@@ -1,6 +1,6 @@
 ---
 applications:
-- name: bbc
+- name: bbcpipeline
   memory: 1024M
   instances: 1
   path: bigbricks_2.12-0.0.2.war

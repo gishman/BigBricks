@@ -7,6 +7,7 @@ val currentScalaVersion = "2.12.2"
   val organizationName = "com.homedepot"
   val activitiVersion = "5.17.0"
   val liftVersion = "3.1.0"
+  val bBCVersion = "0.0.5-SNAPSHOT"
   val username = System.getenv().get("SONATYPE_USERNAME")
   val password = System.getenv().get("SONATYPE_PASSWORD")
   val passphrase = System.getenv().get("PGP_PASSPHRASE") match {
@@ -33,7 +34,7 @@ val currentScalaVersion = "2.12.2"
         "org.eclipse.jetty" % "jetty-plus" % "8.1.17.v20150415" % "container,test", // For Jetty Config
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,test" artifacts Artifact("javax.servlet", "jar", "jar"),
         "com.homedepot" %% "bigbricks-delegates" % "0.0.5-SNAPSHOT",
-        "com.homedepot" %% "bigbricks-core" % "0.0.3-SNAPSHOT",
+        "com.homedepot" %% "bigbricks-core" % bBCVersion,
         "net.lingala.zip4j"%"zip4j"%"1.3.2"
 
     ),

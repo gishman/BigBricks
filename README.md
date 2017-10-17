@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.homedepot/bigbricks/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.homedepot/bigbricks)
 
 Design, deploy, and execute a big data pipeline
-
+Check out the BigBricks-Core for the DSL details
 ```
                       name="SimpleOneSparkJob"
                       env="hd-www-search"
